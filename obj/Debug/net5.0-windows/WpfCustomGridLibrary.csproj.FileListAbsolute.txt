@@ -1,0 +1,17 @@
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\bin\Debug\net5.0-windows\WpfCustomGridLibrary.deps.json
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\bin\Debug\net5.0-windows\WpfCustomGridLibrary.dll
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\bin\Debug\net5.0-windows\ref\WpfCustomGridLibrary.dll
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\bin\Debug\net5.0-windows\WpfCustomGridLibrary.pdb
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary_MarkupCompile.cache
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary_MarkupCompile.lref
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\Themes\Generic.baml
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.g.resources
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.GeneratedMSBuildEditorConfig.editorconfig
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.AssemblyInfoInputs.cache
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.AssemblyInfo.cs
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.csproj.CoreCompileInputs.cache
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.dll
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\ref\WpfCustomGridLibrary.dll
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.pdb
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\GeneratedInternalTypeHelper.g.cs
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.csprojAssemblyReference.cache
