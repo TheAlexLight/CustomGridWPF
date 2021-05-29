@@ -11,6 +11,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"/> />
                     </DockPanel>-->
+                    
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
