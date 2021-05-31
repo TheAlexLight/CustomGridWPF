@@ -55,7 +55,7 @@ namespace WpfCustomGridLibrary
         static CustomGrid()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomGrid), new FrameworkPropertyMetadata(typeof(CustomGrid)));
-            // Panel.MarginProperty.OverrideMetadata(typeof(CustomGrid), new PropertyMetadata(new Thickness(0));
+            //Panel.MarginProperty.OverrideMetadata(typeof(CustomGrid), new PropertyMetadata(new Thickness(0));
 
             ElementsWidthProperty = DependencyProperty.Register(nameof(ElementsWidth), typeof(double), typeof(CustomGrid), new PropertyMetadata(346.0));
             ElementsHeightProperty = DependencyProperty.Register(nameof(ElementsHeight), typeof(double), typeof(CustomGrid), new PropertyMetadata(260.0));
@@ -65,6 +65,12 @@ namespace WpfCustomGridLibrary
         public CustomGrid()
         {
         }
+
+        private double lastChildWidth;
+        private double lastChildHeight;
+        private double tempLastHeight;
+
+        BorderChecker checker = new();
 
         public static readonly DependencyProperty ElementsWidthProperty;
         public static readonly DependencyProperty ElementsHeightProperty;
@@ -87,16 +93,26 @@ namespace WpfCustomGridLibrary
             set => SetValue(MyMarginProperty, value);
         }
 
-        private double lastChildWidth;
-        private double lastChildHeight;
-        private double tempLastHeight;
 
         protected override Size MeasureOverride(Size availableSize)
         {
+            Window parentWindow = Application.Current.MainWindow;
+
+            if (checker.IsLeftLimit(ElementsWidth, availableSize.Width))
+            {
+                parentWindow.SetValue(MinWidthProperty, ElementsWidth + MyMargin.Left + MyMargin.Right);
+            }
+
+            if (checker.IsTopLimit(ElementsHeight, availableSize.Height))
+            {
+                parentWindow.SetValue(MinHeightProperty, ElementsHeight + MyMargin.Top + MyMargin.Bottom);
+            }
+
             foreach (UIElement child in InternalChildren)
             {
                 child.SetValue(WidthProperty, ElementsWidth);
                 child.SetValue(HeightProperty,ElementsHeight);
+                
                 child.Measure(availableSize);
             }
 
@@ -112,9 +128,11 @@ namespace WpfCustomGridLibrary
             double additionalMargin = (finalSize.Width - (ElementsWidth + MyMargin.Left + MyMargin.Right) * countChildsInRow) / 2 / countChildsInRow;
             bool isFirst = true;
 
+            
+
             foreach (UIElement child in InternalChildren)
             {
-                if (lastChildWidth + child.DesiredSize.Width > finalSize.Width)
+                if (checker.IsRightLimit(lastChildWidth + child.DesiredSize.Width, finalSize.Width))
                 {
                     lastChildWidth = 0;
                     lastChildHeight += tempLastHeight;
@@ -146,7 +164,7 @@ namespace WpfCustomGridLibrary
 
             if (visualAdded != null)
             {
-                visualAdded.SetValue(MarginProperty, new Thickness(10));
+                visualAdded.SetValue(MarginProperty, MyMargin);
             }
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
         }
