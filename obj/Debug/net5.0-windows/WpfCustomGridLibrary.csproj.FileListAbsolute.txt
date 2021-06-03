@@ -1,7 +1,7 @@
+E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.csprojAssemblyReference.cache
 E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\GeneratedInternalTypeHelper.g.cs
 E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary_MarkupCompile.cache
 E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary_MarkupCompile.lref
 E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.dll
 E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\ref\WpfCustomGridLibrary.dll
 E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.pdb
-E:\Sasha\Programming\SoftServeCourse\Applications\WPF Projects\WpfCustomGridLibrary\obj\Debug\net5.0-windows\WpfCustomGridLibrary.csprojAssemblyReference.cache

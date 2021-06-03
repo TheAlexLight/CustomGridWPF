@@ -11,8 +11,6 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"/> />
                     </DockPanel>-->
-                    <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    </ScrollViewer>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
