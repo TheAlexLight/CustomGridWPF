@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfCustomGridLibrary.Helpers;
 
 namespace WpfCustomGridLibrary
 {
@@ -65,12 +67,13 @@ namespace WpfCustomGridLibrary
         {
         }
 
-        private double lastChildWidth;
-        private double lastChildHeight;
-        private double tempLastHeight;
-
         BorderChecker checker = new();
+        //RatioManager manager = new(ElementsWidth);
         Dictionary<int, int> childrenRatioDict = new();
+
+        double lastChildWidth;
+        double lastChildHeight;
+        double tempLastHeight;
 
         public static readonly DependencyProperty ElementsWidthProperty;
         public static readonly DependencyProperty ElementsHeightProperty;
@@ -93,6 +96,13 @@ namespace WpfCustomGridLibrary
             set => SetValue(MyMarginProperty, value);
         }
 
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value == null)
+                return DependencyProperty.UnsetValue;
+            return value;
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
             bool needToRecalculateRatio = true;
@@ -104,46 +114,16 @@ namespace WpfCustomGridLibrary
 
             Window parentWindow = Application.Current.MainWindow;
 
-            if (checker.IsLeftLimit(ElementsWidth + MyMargin.Left + MyMargin.Right, parentWindow.Width))
-            {
-                parentWindow.SetValue(MinWidthProperty, ElementsWidth + MyMargin.Left + MyMargin.Right);
-            }
-
-            if (checker.IsTopLimit(ElementsHeight + MyMargin.Top + MyMargin.Bottom + SystemParameters.WindowCaptionHeight, parentWindow.Height))
-            {
-                parentWindow.SetValue(MinHeightProperty, ElementsHeight + MyMargin.Top + SystemParameters.WindowCaptionHeight + MyMargin.Bottom);
-            }
+            checker.SetMinimunWidth(parentWindow, ElementsWidth, MyMargin, MinWidthProperty);
+            checker.SetMinimunHeight(parentWindow, ElementsHeight, MyMargin, MinHeightProperty);
 
             foreach (UIElement child in InternalChildren)
             {
                 if (needToRecalculateRatio)
                 {
-                    child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    double childRatio;
-
-                    if (child.DesiredSize.Width - MyMargin.Left - MyMargin.Right > child.DesiredSize.Height - MyMargin.Top - MyMargin.Bottom)
-                    {
-                        childRatio = CountRatio(child, true);
-                    }
-                    else
-                    {
-                        childRatio = CountRatio(child, false);
-                    }
-
-                    if (!childrenRatioDict.ContainsKey(InternalChildren.IndexOf(child)))
-                    {
-                        childrenRatioDict.Add(InternalChildren.IndexOf(child), (int)childRatio);
-                    }
-
-                    //switch (childRatio)
-                    //{
-                    //    case >=2:
-                    //        listofRatio[0].Add(InternalChildren.IndexOf(child));  
-                    //            break;
-                    //    default:
-                    //        break;
-                    //}
+                    DefineElementsRatio(child);
                 }
+
                 availableSize = new Size(parentWindow.Width,parentWindow.Height);
 
                 child.Measure(availableSize);
@@ -151,74 +131,65 @@ namespace WpfCustomGridLibrary
 
             if (needToRecalculateRatio)
             {
-                for (int i = 3; i >= 2; i--)
-                {
-                    int countOneType = childrenRatioDict.Where(item => item.Value == i).Count();
-
-                    if (countOneType % i != 0)
-                    {
-                        int movedElements = 0;
-                        while ((countOneType - movedElements) % i != 0)
-                        {
-                            var foundedChild = childrenRatioDict.First(children => children.Value == i);
-                            childrenRatioDict[foundedChild.Key] = foundedChild.Value - 1;
-                            InternalChildren[foundedChild.Key].SetValue(HeightProperty, ElementsHeight / (i - 1));
-                            InternalChildren[foundedChild.Key].Measure(availableSize);
-                            movedElements++;
-                        }
-                    }
-                }
+                SearchAllPairs(availableSize);
             }
+
             return base.ArrangeOverride(availableSize);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
             lastChildWidth = 0;
-            lastChildHeight = 0;
+            lastChildWidth = 0;
+            tempLastHeight = 0;
 
             int countChildsInRow = (int)(finalSize.Width / (ElementsWidth + MyMargin.Left + MyMargin.Right));
             int elementsInRow = CountPossibleAmountInRow();
+
             if (elementsInRow < countChildsInRow)
             {
                 countChildsInRow = elementsInRow;
             }
+
             double additionalMargin = (finalSize.Width - (ElementsWidth + MyMargin.Left + MyMargin.Right) * countChildsInRow) / 2 / countChildsInRow;
-            bool isFirst = true;
 
-            double maxHeight;
+            SetOneItem(finalSize, additionalMargin);
+            SetVerticalItems(finalSize, additionalMargin);
+            SetHorizontalItems(finalSize, additionalMargin);
 
+            lastChildWidth = 0;
+            lastChildHeight = 0;
+
+            return finalSize; // Returns the final Arranged size
+        }
+
+        private double SetOneItem(Size finalSize, double additionalMargin)
+        {
             foreach (var item in childrenRatioDict.Where(ch => ch.Value == 1))
             {
                 var child = InternalChildren[item.Key];
-                //foreach (UIElement child in InternalChildren)
-                //{
+
                 if (checker.IsRightLimit(lastChildWidth + child.DesiredSize.Width, finalSize.Width))
                 {
                     lastChildWidth = 0;
-                    lastChildHeight += tempLastHeight;
-                    isFirst = true;
+                    lastChildHeight += ElementsHeight + MyMargin.Top + MyMargin.Bottom;
                 }
 
-                if (!isFirst)
+                if (lastChildWidth != 0)
                 {
                     lastChildWidth += additionalMargin;
                 }
 
-                isFirst = false;
-
                 child.Arrange(new Rect(new Point(lastChildWidth, lastChildHeight), child.DesiredSize));
 
                 lastChildWidth += child.DesiredSize.Width;
-                tempLastHeight = child.DesiredSize.Height;// + MyMargin.Bottom/*((Thickness)child.GetValue(MyMarginProperty)).Bottom*/;
-                //}
-
             }
 
-            maxHeight = tempLastHeight;
-            tempLastHeight = lastChildHeight;
+            return lastChildHeight;
+        }
 
-
+        private void SetVerticalItems(Size finalSize, double additionalMargin)
+        {
             for (int i = 2; i < 4; i++)
             {
                 int count = 0;
@@ -226,60 +197,87 @@ namespace WpfCustomGridLibrary
                 foreach (var item in childrenRatioDict.Where(ch => ch.Value == i))
                 {
                     var child = InternalChildren[item.Key];
-                    //foreach (UIElement child in InternalChildren)
-                    //{
+
                     if (checker.IsRightLimit(lastChildWidth + child.DesiredSize.Width, finalSize.Width) && (count == i || count == 0))
                     {
                         lastChildWidth = 0;
-                        lastChildHeight = maxHeight;
+                        lastChildHeight += ElementsHeight + MyMargin.Top + MyMargin.Bottom;
                         tempLastHeight = lastChildHeight;
-                        isFirst = true;
                     }
 
-                    if (!isFirst && count == 0)
+                    if (lastChildWidth != 0 && count == 0)
                     {
                         lastChildWidth += additionalMargin;
                     }
 
-                    isFirst = false;
-
                     if (count != 0)
                     {
-                        //child.SetValue(MarginProperty, new Thickness(MyMargin.Left, 0, MyMargin.Right, 0));
-                        child.Arrange(new Rect(new Point(lastChildWidth, tempLastHeight - MyMargin.Top * count - MyMargin.Bottom  * count), child.DesiredSize));
+                        child.Arrange(new Rect(new Point(lastChildWidth, tempLastHeight - MyMargin.Top * count - MyMargin.Bottom * count), child.DesiredSize));
                     }
                     else
                     {
-                        //child.SetValue(MarginProperty, new Thickness(MyMargin.Left, 0, MyMargin.Right, 0));
                         child.Arrange(new Rect(new Point(lastChildWidth, tempLastHeight), child.DesiredSize));
                     }
 
-                   // child.SetValue(MarginProperty, MyMargin);
                     tempLastHeight += child.DesiredSize.Height;
 
-
-
                     count++;
-                    //}
 
                     if (count == i)
                     {
-                        maxHeight = tempLastHeight;
                         tempLastHeight = lastChildHeight;
                         lastChildWidth += child.DesiredSize.Width;
                         count = 0;
-
-                        //if (!isFirst)
-                        //{
-                        //    lastChildWidth += additionalMargin;
-                        //}
                     }
                 }
             }
-            lastChildWidth = 0;
-            lastChildHeight = 0;
+        }
 
-            return finalSize; // Returns the final Arranged size
+        private void SetHorizontalItems(Size finalSize, double additionalMargin)
+        {
+            double tempLastWidth = lastChildWidth;
+
+            for (int i = -2; i > -4; i--)
+            {
+                int count = 0;
+
+                foreach (var item in childrenRatioDict.Where(ch => ch.Value == i))
+                {
+                    var child = InternalChildren[item.Key];
+
+                    if (checker.IsRightLimit(lastChildWidth + child.DesiredSize.Width * (count - i) /*+ child.DesiredSize.Width*/, finalSize.Width) && (count == i || count == 0))
+                    {
+                        lastChildWidth = 0;
+                        lastChildHeight += ElementsHeight + MyMargin.Top + MyMargin.Bottom;
+                        tempLastWidth = lastChildWidth;
+                    }
+
+                    if (lastChildWidth != 0 && count == 0)
+                    {
+                        tempLastWidth += additionalMargin;
+                    }
+
+                    if (count != 0)
+                    {
+                        child.Arrange(new Rect(new Point(tempLastWidth - MyMargin.Left * count - MyMargin.Right* count, lastChildHeight), child.DesiredSize));
+                    }
+                    else
+                    {
+                        child.Arrange(new Rect(new Point(tempLastWidth, lastChildHeight), child.DesiredSize));
+                    }
+
+                    tempLastWidth += child.DesiredSize.Width;
+
+                    count++;
+
+                    if (count == i)
+                    {
+                        tempLastHeight = lastChildHeight;
+                        lastChildWidth += child.DesiredSize.Width;
+                        count = 0;
+                    }
+                }
+            }
         }
 
         private int CountPossibleAmountInRow()
@@ -291,7 +289,51 @@ namespace WpfCustomGridLibrary
                 amount += childrenRatioDict.Where(ch => ch.Value == i).Count() / i;
             }
 
+            for (int i = -2; i > -4; i--)
+            {
+                amount += childrenRatioDict.Where(ch => ch.Value == i).Count() / Math.Abs(i);
+            }
+
             return amount;
+        }
+
+        private void SearchAllPairs(Size availableSize)
+        {
+            for (int i = 3; i >= 2; i--)
+            {
+                int countOneType = childrenRatioDict.Where(item => item.Value == i).Count();
+
+                if (countOneType % i != 0)
+                {
+                    int movedElements = 0;
+                    while ((countOneType - movedElements) % i != 0)
+                    {
+                        var foundedChild = childrenRatioDict.First(children => children.Value == i);
+                        childrenRatioDict[foundedChild.Key] = foundedChild.Value - 1;
+                        InternalChildren[foundedChild.Key].SetValue(HeightProperty, ElementsHeight / (i - 1));
+                        InternalChildren[foundedChild.Key].Measure(availableSize);
+                        movedElements++;
+                    }
+                }
+            }
+
+            for (int i = -3; i <= -2; i++)
+            {
+                int countOneType = childrenRatioDict.Where(item => item.Value == i).Count();
+
+                if (countOneType % Math.Abs(i) != 0)
+                {
+                    int movedElements = 0;
+                    while ((countOneType - movedElements) % Math.Abs(i) != 0)
+                    {
+                        var foundedChild = childrenRatioDict.First(children => children.Value == i);
+                        childrenRatioDict[foundedChild.Key] = foundedChild.Value + 1;
+                        InternalChildren[foundedChild.Key].SetValue(HeightProperty, ElementsHeight / Math.Abs((i + 1)));
+                        InternalChildren[foundedChild.Key].Measure(availableSize);
+                        movedElements++;
+                    }
+                }
+            }
         }
 
         public double CountRatio(UIElement child, bool isWidthBigger)
@@ -310,7 +352,7 @@ namespace WpfCustomGridLibrary
                 childRatio = -(child.DesiredSize.Height - MyMargin.Top - MyMargin.Bottom) / (child.DesiredSize.Width - MyMargin.Left - MyMargin.Right);
                 setWidth = ElementsWidth / Math.Abs((int)childRatio);
             }
-            
+
             child.SetValue(WidthProperty, setWidth);
             child.SetValue(HeightProperty, setHeight);
 
@@ -321,6 +363,36 @@ namespace WpfCustomGridLibrary
 
             return childRatio;
         }
+
+        private double ChooseRatio(UIElement child)
+        {
+            double childRatio;
+
+            if (child.DesiredSize.Width - MyMargin.Left - MyMargin.Right > child.DesiredSize.Height - MyMargin.Top - MyMargin.Bottom)
+            {
+                childRatio = CountRatio(child, true);
+            }
+            else
+            {
+                childRatio = CountRatio(child, false);
+            }
+
+            return childRatio;
+        }
+
+        private void DefineElementsRatio(UIElement child)
+        {
+            child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            double childRatio;
+
+            childRatio = ChooseRatio(child);
+
+            if (!childrenRatioDict.ContainsKey(InternalChildren.IndexOf(child)))
+            {
+                childrenRatioDict.Add(InternalChildren.IndexOf(child), (int)childRatio);
+            }
+        }
+
 
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
         {
