@@ -96,13 +96,6 @@ namespace WpfCustomGridLibrary
             set => SetValue(MyMarginProperty, value);
         }
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-                return DependencyProperty.UnsetValue;
-            return value;
-        }
-
         protected override Size MeasureOverride(Size availableSize)
         {
             bool needToRecalculateRatio = true;
@@ -328,7 +321,11 @@ namespace WpfCustomGridLibrary
                     {
                         var foundedChild = childrenRatioDict.First(children => children.Value == i);
                         childrenRatioDict[foundedChild.Key] = foundedChild.Value + 1;
-                        InternalChildren[foundedChild.Key].SetValue(HeightProperty, ElementsHeight / Math.Abs((i + 1)));
+                        if (childrenRatioDict[foundedChild.Key] == -1)
+                        {
+                            childrenRatioDict[foundedChild.Key] = 1;
+                        }
+                        InternalChildren[foundedChild.Key].SetValue(WidthProperty, ElementsWidth / Math.Abs((i + 1)));
                         InternalChildren[foundedChild.Key].Measure(availableSize);
                         movedElements++;
                     }
@@ -345,11 +342,19 @@ namespace WpfCustomGridLibrary
             if (isWidthBigger)
             {
                 childRatio = (child.DesiredSize.Width - MyMargin.Left - MyMargin.Right) / (child.DesiredSize.Height - MyMargin.Top - MyMargin.Bottom);
+                if (childRatio > 3)
+                {
+                    childRatio = 3;
+                }
                 setHeight = ElementsHeight / (int)childRatio;
             }
             else
             {
                 childRatio = -(child.DesiredSize.Height - MyMargin.Top - MyMargin.Bottom) / (child.DesiredSize.Width - MyMargin.Left - MyMargin.Right);
+                if (childRatio < -3)
+                {
+                    childRatio = -3;
+                }
                 setWidth = ElementsWidth / Math.Abs((int)childRatio);
             }
 
@@ -359,6 +364,10 @@ namespace WpfCustomGridLibrary
             if (childRatio > 3)
             {
                 childRatio = 3;
+            }
+            else if (childRatio < -3)
+            {
+                childRatio = -3;
             }
 
             return childRatio;
