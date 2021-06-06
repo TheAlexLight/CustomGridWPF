@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using ImagePanelLibrary.Helpers;
+using WpfCustomGridLibrary.Helpers;
 
 namespace ImagePanelLibrary
 {
@@ -39,15 +40,15 @@ namespace ImagePanelLibrary
     /// </summary>
 #endregion
 
-    public class ImagePanel : Panel//, IScrollInfo
+   public class ImagePanel : Panel//, IScrollInfo
     {
         static ImagePanel()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ImagePanel), new FrameworkPropertyMetadata(typeof(ImagePanel)));
 
-            ElementsWidthProperty = DependencyProperty.Register(nameof(ItemsWidth), typeof(double), typeof(ImagePanel), new PropertyMetadata(360.0));
-            ElementsHeightProperty = DependencyProperty.Register(nameof(ItemsHeight), typeof(double), typeof(ImagePanel), new PropertyMetadata(270.0));
-            MyMarginProperty = DependencyProperty.Register(nameof(ItemsMargin), typeof(Thickness), typeof(ImagePanel), new PropertyMetadata(new Thickness(0)));
+            ItemsWidthProperty = DependencyProperty.Register(nameof(ItemsWidth), typeof(double), typeof(ImagePanel), new PropertyMetadata(360.0));
+            ItemsHeightProperty = DependencyProperty.Register(nameof(ItemsHeight), typeof(double), typeof(ImagePanel), new PropertyMetadata(270.0));
+            ItemsMarginProperty = DependencyProperty.Register(nameof(ItemsMargin), typeof(Thickness), typeof(ImagePanel), new PropertyMetadata(new Thickness(0)));
         }
 
 
@@ -56,35 +57,35 @@ namespace ImagePanelLibrary
         }
 
         BorderChecker checker = new();
-        //RatioManager manager = new(ElementsWidth);
+        RatioManager manager = new();
         Dictionary<int, int> childrenRatioDict = new();
 
         double lastChildWidth;
         double lastChildHeight;
         double tempLastHeight;
 
-        const int PARTS_IN_HORIZONTAL_BLOCK = 3;
-        const int PARTS_IN_VERTICAL_BLOCK = 4;
+        public const int PARTS_IN_HORIZONTAL_BLOCK = 3;
+        public const int PARTS_IN_VERTICAL_BLOCK = 4;
 
-        public static readonly DependencyProperty ElementsWidthProperty;
-        public static readonly DependencyProperty ElementsHeightProperty;
-        public static readonly DependencyProperty MyMarginProperty;
+        public static readonly DependencyProperty ItemsWidthProperty;
+        public static readonly DependencyProperty ItemsHeightProperty;
+        public static readonly DependencyProperty ItemsMarginProperty;
 
         public double ItemsWidth
         {
-            get => (double)GetValue(ElementsWidthProperty);
-            set => SetValue(ElementsWidthProperty, value);
+            get => (double)base.GetValue(ItemsWidthProperty);
+            set => SetValue(ItemsWidthProperty, value);
         }
 
         public double ItemsHeight
         {
-            get => (double)GetValue(ElementsHeightProperty);
-            set => SetValue(ElementsHeightProperty, value);
+            get => (double)GetValue(ItemsHeightProperty);
+            set => SetValue(ItemsHeightProperty, value);
         }
 
         public Thickness ItemsMargin {
-            get => (Thickness)GetValue(MyMarginProperty);
-            set => SetValue(MyMarginProperty, value);
+            get => (Thickness)GetValue(ItemsMarginProperty);
+            set => SetValue(ItemsMarginProperty, value);
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -101,11 +102,13 @@ namespace ImagePanelLibrary
             checker.SetMinimunWidth(parentWindow, ItemsWidth, ItemsMargin, MinWidthProperty);
             checker.SetMinimunHeight(parentWindow, ItemsHeight, ItemsMargin, MinHeightProperty);
 
+            manager.Initialize(ItemsWidth, ItemsHeight, ItemsMargin);
+
             foreach (UIElement child in InternalChildren)
             {
                 if (needToRecalculateRatio)
                 {
-                    DefineElementsRatio(child);
+                  childrenRatioDict = manager.DefineElementsRatio(child, WidthProperty, HeightProperty, childrenRatioDict, InternalChildren);
                 }
 
                 availableSize = new Size(parentWindow.Width,parentWindow.Height);
@@ -159,14 +162,9 @@ namespace ImagePanelLibrary
                     lastChildHeight += ItemsHeight + ItemsMargin.Top + ItemsMargin.Bottom;
                 }
 
-                if (lastChildWidth != 0)
-                {
-                    lastChildWidth += additionalMargin;
-                }
-
                 child.Arrange(new Rect(new Point(lastChildWidth, lastChildHeight), child.DesiredSize));
 
-                lastChildWidth += child.DesiredSize.Width;
+                lastChildWidth += child.DesiredSize.Width + additionalMargin;
             }
 
             return lastChildHeight;
@@ -189,11 +187,6 @@ namespace ImagePanelLibrary
                         tempLastHeight = lastChildHeight;
                     }
 
-                    if (lastChildWidth != 0 && count == 0)
-                    {
-                        lastChildWidth += additionalMargin;
-                    }
-
                     if (count != 0)
                     {
                         child.Arrange(new Rect(new Point(lastChildWidth, tempLastHeight - ItemsMargin.Top * count - ItemsMargin.Bottom * count), child.DesiredSize));
@@ -210,7 +203,7 @@ namespace ImagePanelLibrary
                     if (count == i)
                     {
                         tempLastHeight = lastChildHeight;
-                        lastChildWidth += child.DesiredSize.Width;
+                        lastChildWidth += child.DesiredSize.Width + additionalMargin;
                         count = 0;
                     }
                 }
@@ -229,16 +222,12 @@ namespace ImagePanelLibrary
                 {
                     var child = InternalChildren[item.Key];
 
-                    if (checker.IsRightLimit(lastChildWidth + child.DesiredSize.Width * (count - i) /*+ child.DesiredSize.Width*/, finalSize.Width) && (count == i || count == 0))
+                    if (checker.IsRightLimit(lastChildWidth + (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right) * (count - i) 
+                            + ItemsMargin.Left + ItemsMargin.Right, finalSize.Width) && (count == i || count == 0))
                     {
                         lastChildWidth = 0;
                         lastChildHeight += ItemsHeight + ItemsMargin.Top + ItemsMargin.Bottom;
                         tempLastWidth = lastChildWidth;
-                    }
-
-                    if (lastChildWidth != 0 && count == 0)
-                    {
-                        tempLastWidth += additionalMargin;
                     }
 
                     if (count != 0)
@@ -254,10 +243,10 @@ namespace ImagePanelLibrary
 
                     count++;
 
-                    if (count == i)
+                    if (count == Math.Abs(i))
                     {
                         tempLastHeight = lastChildHeight;
-                        lastChildWidth += child.DesiredSize.Width;
+                        lastChildWidth += (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right) * count + ItemsMargin.Left + ItemsMargin.Right + additionalMargin;
                         count = 0;
                     }
                 }
@@ -323,67 +312,6 @@ namespace ImagePanelLibrary
                 }
             }
         }
-
-        public double CountRatio(UIElement child, bool isWidthBigger)
-        {
-            double childRatio;
-            double setWidth = ItemsWidth;
-            double setHeight = ItemsHeight;
-
-            if (isWidthBigger)
-            {
-                childRatio = (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right) / (child.DesiredSize.Height - ItemsMargin.Top - ItemsMargin.Bottom);
-                if (childRatio > ImagePanel.PARTS_IN_VERTICAL_BLOCK)
-                {
-                    childRatio = ImagePanel.PARTS_IN_VERTICAL_BLOCK;
-                }
-                setHeight = ItemsHeight / (int)childRatio;
-            }
-            else
-            {
-                childRatio = -(child.DesiredSize.Height - ItemsMargin.Top - ItemsMargin.Bottom) / (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right);
-                if (childRatio < -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK)
-                {
-                    childRatio = -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK;
-                }
-                setWidth = ItemsWidth / Math.Abs((int)childRatio);
-            }
-
-            child.SetValue(WidthProperty, setWidth);
-            child.SetValue(HeightProperty, setHeight);
-
-            return childRatio;
-        }
-
-        private double ChooseRatio(UIElement child)
-        {
-            double childRatio;
-
-            if (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right > child.DesiredSize.Height - ItemsMargin.Top - ItemsMargin.Bottom)
-            {
-                childRatio = CountRatio(child, true);
-            }
-            else
-            {
-                childRatio = CountRatio(child, false);
-            }
-
-            return childRatio;
-        }
-
-        private void DefineElementsRatio(UIElement child)
-        {
-            child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            double childRatio;
-
-            childRatio = ChooseRatio(child);
-
-            if (!childrenRatioDict.ContainsKey(InternalChildren.IndexOf(child)))
-            {
-                childrenRatioDict.Add(InternalChildren.IndexOf(child), (int)childRatio);
-            }
-        }
-
 
         protected override void OnVisualChildrenChanged(DependencyObject visualAdded, DependencyObject visualRemoved)
         {

@@ -1,91 +1,92 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
-//using System.Threading.Tasks;
-//using System.Windows;
-//using System.Windows.Controls;
+﻿using ImagePanelLibrary;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
-//namespace WpfCustomGridLibrary.Helpers
-//{
-//    class RatioManager
-//    {
-//        public int AA(double b)
-//        {
-//            return 0;
-//        }
+namespace WpfCustomGridLibrary.Helpers
+{
+    public class RatioManager
+    {
+        private double _itemsWidth;
+        private double _itemsHeight;
+        private Thickness _itemsMargin;
 
-//        private double _elementsWidth;
-//        private double _elementsHeight;
-//        private Thickness _elementsMargin;
+        public RatioManager()
+        {
+        }
 
-//        public RatioManager(double elementsWidth, double elementsHeight, Thickness elementsMargin)
-//        {
-//            _elementsWidth = elementsWidth;
-//            _elementsHeight = elementsHeight;
-//            _elementsMargin = elementsMargin;
+        public void Initialize(double itemsWidth, double itemsHeight, Thickness itemsMargin)
+        {
+            _itemsWidth = itemsWidth;
+            _itemsHeight = itemsHeight;
+            _itemsMargin = itemsMargin;
+        }
 
-           
-//        }
+        public Dictionary<int,int> DefineElementsRatio(UIElement child, DependencyProperty widthProperty, DependencyProperty heightProperty,
+                Dictionary<int, int> childrenRatioDict, UIElementCollection internalChildren)
+        {
+            child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            double childRatio;
 
-//        public double CountRatio(ref DependencyProperty widthProperty, ref DependencyProperty heightProperty, UIElement child, bool isWidthBigger)
-//        {
-//            double childRatio;
-//            double setWidth = _elementsWidth;
-//            double setHeight = _elementsHeight;
+            childRatio = ChooseRatio(child, widthProperty, heightProperty);
 
-//            if (isWidthBigger)
-//            {
-//                childRatio = (child.DesiredSize.Width - _elementsMargin.Left - _elementsMargin.Right) 
-//                        / (child.DesiredSize.Height - _elementsMargin.Top - _elementsMargin.Bottom);
-//                setHeight = _elementsHeight / (int)childRatio;
-//            }
-//            else
-//            {
-//                childRatio = -(child.DesiredSize.Height - _elementsMargin.Top - _elementsMargin.Bottom) 
-//                        / (child.DesiredSize.Width - _elementsMargin.Left - _elementsMargin.Right);
-//                setWidth = _elementsWidth / Math.Abs((int)childRatio);
-//            }
+            if (!childrenRatioDict.ContainsKey(internalChildren.IndexOf(child)))
+            {
+                childrenRatioDict.Add(internalChildren.IndexOf(child), (int)childRatio);
+            }
 
-//            child.SetValue(widthProperty, setWidth);
-//            child.SetValue(heightProperty, setHeight);
+            return childrenRatioDict;
+        }
 
-//            if (childRatio > 3)
-//            {
-//                childRatio = 3;
-//            }
+        private double ChooseRatio(UIElement child, DependencyProperty widthProperty, DependencyProperty heightProperty)
+        {
+            double childRatio;
 
-//            return childRatio;
-//        }
+            if (child.DesiredSize.Width - _itemsMargin.Left - _itemsMargin.Right > child.DesiredSize.Height - _itemsMargin.Top - _itemsMargin.Bottom)
+            {
+                childRatio = CountRatio(widthProperty, heightProperty, child, true);
+            }
+            else
+            {
+                childRatio = CountRatio(widthProperty, heightProperty, child, false);
+            }
 
-//        private double ChooseRatio(UIElement child,DependencyProperty widthProperty, DependencyProperty heightProperty)
-//        {
-//            double childRatio;
+            return childRatio;
+        }
 
-//            if (child.DesiredSize.Width - _elementsMargin.Left - _elementsMargin.Right > child.DesiredSize.Height - _elementsMargin.Top - _elementsMargin.Bottom)
-//            {
-//                childRatio = CountRatio(ref widthProperty,ref heightProperty, child, true);
-//            }
-//            else
-//            {
-//                childRatio = CountRatio(ref widthProperty,ref heightProperty, child, false);
-//            }
+        public double CountRatio(DependencyProperty widthProperty,DependencyProperty heightProperty, UIElement child, bool isWidthBigger)
+        {
+            double childRatio;
+            double setWidth = _itemsWidth;
+            double setHeight = _itemsHeight;
 
-//            return childRatio;
-//        }
+            if (isWidthBigger)
+            {
+                childRatio = (child.DesiredSize.Width - _itemsMargin.Left - _itemsMargin.Right) / (child.DesiredSize.Height - _itemsMargin.Top - _itemsMargin.Bottom);
+                if (childRatio > ImagePanel.PARTS_IN_VERTICAL_BLOCK)
+                {
+                    childRatio = ImagePanel.PARTS_IN_VERTICAL_BLOCK;
+                }
+                setHeight = _itemsHeight / (int)childRatio;
+            }
+            else
+            {
+                childRatio = -(child.DesiredSize.Height - _itemsMargin.Top - _itemsMargin.Bottom) / (child.DesiredSize.Width - _itemsMargin.Left - _itemsMargin.Right);
+                if (childRatio < -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK)
+                {
+                    childRatio = -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK;
+                }
+                setWidth = _itemsWidth / Math.Abs((int)childRatio);
+            }
 
-//        private void DefineElementsRatio(UIElement child, DependencyProperty widthProperty, DependencyProperty heightProperty, 
-//                Dictionary<int,int> childrenRatioDict, UIElementCollection internalChildren)
-//        {
-//            child.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-//            double childRatio;
+            child.SetValue(widthProperty, setWidth);
+            child.SetValue(heightProperty, setHeight);
 
-//            childRatio = ChooseRatio(child, widthProperty, heightProperty);
-
-//            if (!childrenRatioDict.ContainsKey(internalChildren.IndexOf(child)))
-//            {
-//                childrenRatioDict.Add(internalChildren.IndexOf(child), (int)childRatio);
-//            }
-//        }
-//    }
-//}
+            return childRatio;
+        }
+    }
+}
