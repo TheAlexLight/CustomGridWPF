@@ -1,23 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Markup;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using WpfCustomGridLibrary.Helpers;
+using ImagePanelLibrary.Helpers;
 
-namespace WpfCustomGridLibrary
+namespace ImagePanelLibrary
 {
     #region Instruction of using
     /// <summary>
@@ -51,19 +39,19 @@ namespace WpfCustomGridLibrary
     /// </summary>
 #endregion
 
-    public class CustomGrid : Panel//, IScrollInfo
+    public class ImagePanel : Panel//, IScrollInfo
     {
-        static CustomGrid()
+        static ImagePanel()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(CustomGrid), new FrameworkPropertyMetadata(typeof(CustomGrid)));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ImagePanel), new FrameworkPropertyMetadata(typeof(ImagePanel)));
 
-            ElementsWidthProperty = DependencyProperty.Register(nameof(ElementsWidth), typeof(double), typeof(CustomGrid), new PropertyMetadata(360.0));
-            ElementsHeightProperty = DependencyProperty.Register(nameof(ElementsHeight), typeof(double), typeof(CustomGrid), new PropertyMetadata(270.0));
-            MyMarginProperty = DependencyProperty.Register(nameof(MyMargin), typeof(Thickness), typeof(CustomGrid), new PropertyMetadata(new Thickness(0)));
+            ElementsWidthProperty = DependencyProperty.Register(nameof(ItemsWidth), typeof(double), typeof(ImagePanel), new PropertyMetadata(360.0));
+            ElementsHeightProperty = DependencyProperty.Register(nameof(ItemsHeight), typeof(double), typeof(ImagePanel), new PropertyMetadata(270.0));
+            MyMarginProperty = DependencyProperty.Register(nameof(ItemsMargin), typeof(Thickness), typeof(ImagePanel), new PropertyMetadata(new Thickness(0)));
         }
 
 
-        public CustomGrid()
+        public ImagePanel()
         {
         }
 
@@ -75,23 +63,26 @@ namespace WpfCustomGridLibrary
         double lastChildHeight;
         double tempLastHeight;
 
+        const int PARTS_IN_HORIZONTAL_BLOCK = 3;
+        const int PARTS_IN_VERTICAL_BLOCK = 4;
+
         public static readonly DependencyProperty ElementsWidthProperty;
         public static readonly DependencyProperty ElementsHeightProperty;
         public static readonly DependencyProperty MyMarginProperty;
 
-        public double ElementsWidth
+        public double ItemsWidth
         {
             get => (double)GetValue(ElementsWidthProperty);
             set => SetValue(ElementsWidthProperty, value);
         }
 
-        public double ElementsHeight
+        public double ItemsHeight
         {
             get => (double)GetValue(ElementsHeightProperty);
             set => SetValue(ElementsHeightProperty, value);
         }
 
-        public Thickness MyMargin {
+        public Thickness ItemsMargin {
             get => (Thickness)GetValue(MyMarginProperty);
             set => SetValue(MyMarginProperty, value);
         }
@@ -107,8 +98,8 @@ namespace WpfCustomGridLibrary
 
             Window parentWindow = Application.Current.MainWindow;
 
-            checker.SetMinimunWidth(parentWindow, ElementsWidth, MyMargin, MinWidthProperty);
-            checker.SetMinimunHeight(parentWindow, ElementsHeight, MyMargin, MinHeightProperty);
+            checker.SetMinimunWidth(parentWindow, ItemsWidth, ItemsMargin, MinWidthProperty);
+            checker.SetMinimunHeight(parentWindow, ItemsHeight, ItemsMargin, MinHeightProperty);
 
             foreach (UIElement child in InternalChildren)
             {
@@ -136,7 +127,7 @@ namespace WpfCustomGridLibrary
             lastChildWidth = 0;
             tempLastHeight = 0;
 
-            int countChildsInRow = (int)(finalSize.Width / (ElementsWidth + MyMargin.Left + MyMargin.Right));
+            int countChildsInRow = (int)(finalSize.Width / (ItemsWidth + ItemsMargin.Left + ItemsMargin.Right));
             int elementsInRow = CountPossibleAmountInRow();
 
             if (elementsInRow < countChildsInRow)
@@ -144,7 +135,7 @@ namespace WpfCustomGridLibrary
                 countChildsInRow = elementsInRow;
             }
 
-            double additionalMargin = (finalSize.Width - (ElementsWidth + MyMargin.Left + MyMargin.Right) * countChildsInRow) / 2 / countChildsInRow;
+            double additionalMargin = (finalSize.Width - (ItemsWidth + ItemsMargin.Left + ItemsMargin.Right) * countChildsInRow) / 2 / countChildsInRow;
 
             SetOneItem(finalSize, additionalMargin);
             SetVerticalItems(finalSize, additionalMargin);
@@ -165,7 +156,7 @@ namespace WpfCustomGridLibrary
                 if (checker.IsRightLimit(lastChildWidth + child.DesiredSize.Width, finalSize.Width))
                 {
                     lastChildWidth = 0;
-                    lastChildHeight += ElementsHeight + MyMargin.Top + MyMargin.Bottom;
+                    lastChildHeight += ItemsHeight + ItemsMargin.Top + ItemsMargin.Bottom;
                 }
 
                 if (lastChildWidth != 0)
@@ -183,7 +174,7 @@ namespace WpfCustomGridLibrary
 
         private void SetVerticalItems(Size finalSize, double additionalMargin)
         {
-            for (int i = 2; i < 4; i++)
+            for (int i = 2; i <= ImagePanel.PARTS_IN_VERTICAL_BLOCK; i++)
             {
                 int count = 0;
 
@@ -194,7 +185,7 @@ namespace WpfCustomGridLibrary
                     if (checker.IsRightLimit(lastChildWidth + child.DesiredSize.Width, finalSize.Width) && (count == i || count == 0))
                     {
                         lastChildWidth = 0;
-                        lastChildHeight += ElementsHeight + MyMargin.Top + MyMargin.Bottom;
+                        lastChildHeight += ItemsHeight + ItemsMargin.Top + ItemsMargin.Bottom;
                         tempLastHeight = lastChildHeight;
                     }
 
@@ -205,7 +196,7 @@ namespace WpfCustomGridLibrary
 
                     if (count != 0)
                     {
-                        child.Arrange(new Rect(new Point(lastChildWidth, tempLastHeight - MyMargin.Top * count - MyMargin.Bottom * count), child.DesiredSize));
+                        child.Arrange(new Rect(new Point(lastChildWidth, tempLastHeight - ItemsMargin.Top * count - ItemsMargin.Bottom * count), child.DesiredSize));
                     }
                     else
                     {
@@ -230,7 +221,7 @@ namespace WpfCustomGridLibrary
         {
             double tempLastWidth = lastChildWidth;
 
-            for (int i = -2; i > -4; i--)
+            for (int i = -2; i >= -PARTS_IN_HORIZONTAL_BLOCK; i--)
             {
                 int count = 0;
 
@@ -241,7 +232,7 @@ namespace WpfCustomGridLibrary
                     if (checker.IsRightLimit(lastChildWidth + child.DesiredSize.Width * (count - i) /*+ child.DesiredSize.Width*/, finalSize.Width) && (count == i || count == 0))
                     {
                         lastChildWidth = 0;
-                        lastChildHeight += ElementsHeight + MyMargin.Top + MyMargin.Bottom;
+                        lastChildHeight += ItemsHeight + ItemsMargin.Top + ItemsMargin.Bottom;
                         tempLastWidth = lastChildWidth;
                     }
 
@@ -252,7 +243,7 @@ namespace WpfCustomGridLibrary
 
                     if (count != 0)
                     {
-                        child.Arrange(new Rect(new Point(tempLastWidth - MyMargin.Left * count - MyMargin.Right* count, lastChildHeight), child.DesiredSize));
+                        child.Arrange(new Rect(new Point(tempLastWidth - ItemsMargin.Left * count - ItemsMargin.Right* count, lastChildHeight), child.DesiredSize));
                     }
                     else
                     {
@@ -277,12 +268,12 @@ namespace WpfCustomGridLibrary
         {
             int amount = 0;
 
-            for (int i = 1; i < 4; i++)
+            for (int i = 1; i <= ImagePanel.PARTS_IN_VERTICAL_BLOCK; i++)
             {
                 amount += childrenRatioDict.Where(ch => ch.Value == i).Count() / i;
             }
 
-            for (int i = -2; i > -4; i--)
+            for (int i = -2; i >= -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK; i--)
             {
                 amount += childrenRatioDict.Where(ch => ch.Value == i).Count() / Math.Abs(i);
             }
@@ -292,7 +283,7 @@ namespace WpfCustomGridLibrary
 
         private void SearchAllPairs(Size availableSize)
         {
-            for (int i = 3; i >= 2; i--)
+            for (int i = ImagePanel.PARTS_IN_VERTICAL_BLOCK; i >= 2; i--)
             {
                 int countOneType = childrenRatioDict.Where(item => item.Value == i).Count();
 
@@ -303,14 +294,14 @@ namespace WpfCustomGridLibrary
                     {
                         var foundedChild = childrenRatioDict.First(children => children.Value == i);
                         childrenRatioDict[foundedChild.Key] = foundedChild.Value - 1;
-                        InternalChildren[foundedChild.Key].SetValue(HeightProperty, ElementsHeight / (i - 1));
+                        InternalChildren[foundedChild.Key].SetValue(HeightProperty, ItemsHeight / (i - 1));
                         InternalChildren[foundedChild.Key].Measure(availableSize);
                         movedElements++;
                     }
                 }
             }
 
-            for (int i = -3; i <= -2; i++)
+            for (int i = -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK; i <= -2; i++)
             {
                 int countOneType = childrenRatioDict.Where(item => item.Value == i).Count();
 
@@ -325,7 +316,7 @@ namespace WpfCustomGridLibrary
                         {
                             childrenRatioDict[foundedChild.Key] = 1;
                         }
-                        InternalChildren[foundedChild.Key].SetValue(WidthProperty, ElementsWidth / Math.Abs((i + 1)));
+                        InternalChildren[foundedChild.Key].SetValue(WidthProperty, ItemsWidth / Math.Abs((i + 1)));
                         InternalChildren[foundedChild.Key].Measure(availableSize);
                         movedElements++;
                     }
@@ -336,39 +327,30 @@ namespace WpfCustomGridLibrary
         public double CountRatio(UIElement child, bool isWidthBigger)
         {
             double childRatio;
-            double setWidth = ElementsWidth;
-            double setHeight = ElementsHeight;
+            double setWidth = ItemsWidth;
+            double setHeight = ItemsHeight;
 
             if (isWidthBigger)
             {
-                childRatio = (child.DesiredSize.Width - MyMargin.Left - MyMargin.Right) / (child.DesiredSize.Height - MyMargin.Top - MyMargin.Bottom);
-                if (childRatio > 3)
+                childRatio = (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right) / (child.DesiredSize.Height - ItemsMargin.Top - ItemsMargin.Bottom);
+                if (childRatio > ImagePanel.PARTS_IN_VERTICAL_BLOCK)
                 {
-                    childRatio = 3;
+                    childRatio = ImagePanel.PARTS_IN_VERTICAL_BLOCK;
                 }
-                setHeight = ElementsHeight / (int)childRatio;
+                setHeight = ItemsHeight / (int)childRatio;
             }
             else
             {
-                childRatio = -(child.DesiredSize.Height - MyMargin.Top - MyMargin.Bottom) / (child.DesiredSize.Width - MyMargin.Left - MyMargin.Right);
-                if (childRatio < -3)
+                childRatio = -(child.DesiredSize.Height - ItemsMargin.Top - ItemsMargin.Bottom) / (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right);
+                if (childRatio < -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK)
                 {
-                    childRatio = -3;
+                    childRatio = -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK;
                 }
-                setWidth = ElementsWidth / Math.Abs((int)childRatio);
+                setWidth = ItemsWidth / Math.Abs((int)childRatio);
             }
 
             child.SetValue(WidthProperty, setWidth);
             child.SetValue(HeightProperty, setHeight);
-
-            if (childRatio > 3)
-            {
-                childRatio = 3;
-            }
-            else if (childRatio < -3)
-            {
-                childRatio = -3;
-            }
 
             return childRatio;
         }
@@ -377,7 +359,7 @@ namespace WpfCustomGridLibrary
         {
             double childRatio;
 
-            if (child.DesiredSize.Width - MyMargin.Left - MyMargin.Right > child.DesiredSize.Height - MyMargin.Top - MyMargin.Bottom)
+            if (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right > child.DesiredSize.Height - ItemsMargin.Top - ItemsMargin.Bottom)
             {
                 childRatio = CountRatio(child, true);
             }
@@ -407,7 +389,7 @@ namespace WpfCustomGridLibrary
         {
             if (visualAdded != null)
             {
-                visualAdded.SetValue(MarginProperty, MyMargin);
+                visualAdded.SetValue(MarginProperty, ItemsMargin);
             }
             base.OnVisualChildrenChanged(visualAdded, visualRemoved);
         }

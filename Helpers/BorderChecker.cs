@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace WpfCustomGridLibrary.Helpers
+namespace ImagePanelLibrary.Helpers
 {
     class BorderChecker
     {
