@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using ImagePanelLibrary.Helpers;
 using WpfCustomGridLibrary.Helpers;
 
@@ -52,6 +54,8 @@ namespace ImagePanelLibrary
                     , new PropertyMetadata(270.0, ItemsHeightPropertyChanged, ItemsHeightCoerceValue));
             ItemsMarginProperty = DependencyProperty.Register(nameof(ItemsMargin), typeof(Thickness), typeof(ImagePanel)
                     , new PropertyMetadata(new Thickness(10), ItemsMarginPropertyChanged, ItemsMarginCoerceValue));
+            ItemsListProperty = DependencyProperty.Register(nameof(ItemsList), typeof(ObservableCollection<UIElement>), typeof(ImagePanel)
+        , new PropertyMetadata(null, ItemsListPropertyChanged));
 
             ItemsWidthChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsWidthChanged), RoutingStrategy.Bubble
                 , typeof(RoutedPropertyChangedEventHandler<double>), typeof(ImagePanel));
@@ -59,11 +63,31 @@ namespace ImagePanelLibrary
                     , typeof(RoutedPropertyChangedEventHandler<double>), typeof(ImagePanel));
             ItemsMarginChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsMarginChanged), RoutingStrategy.Bubble
         , typeof(RoutedPropertyChangedEventHandler<Thickness>), typeof(ImagePanel));
+            ItemsListChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsListChanged), RoutingStrategy.Bubble
+, typeof(RoutedPropertyChangedEventHandler<ObservableCollection<UIElement>>), typeof(ImagePanel));
         }
 
         public ImagePanel()
         {
+            //this.Loaded += new RoutedEventHandler(ImagePanel_Loaded);
         }
+
+        //private void ImagePanel_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    var parent = VisualTreeHelper.GetParent(this);
+
+        //    ScrollViewer viewer = new ScrollViewer
+        //    {
+        //        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+        //        VerticalScrollBarVisibility = ScrollBarVisibility.Auto
+        //    };
+
+        //    viewer.Content = this;
+
+        //    parent.Children.Add(viewer);
+        //}
+
+      
 
         BorderChecker checker = new();
         RatioManager manager = new();
@@ -79,10 +103,12 @@ namespace ImagePanelLibrary
         public static readonly DependencyProperty ItemsWidthProperty;
         public static readonly DependencyProperty ItemsHeightProperty;
         public static readonly DependencyProperty ItemsMarginProperty;
+        public static readonly DependencyProperty ItemsListProperty;
 
         public static readonly RoutedEvent ItemsWidthChangedEvent;
         public static readonly RoutedEvent ItemsHeightChangedEvent;
         public static readonly RoutedEvent ItemsMarginChangedEvent;
+        public static readonly RoutedEvent ItemsListChangedEvent;
 
         public double ItemsWidth
         {
@@ -101,6 +127,12 @@ namespace ImagePanelLibrary
             set => SetValue(ItemsMarginProperty, value);
         }
 
+        public ObservableCollection<UIElement> ItemsList
+        {
+            get => (ObservableCollection<UIElement>)GetValue(ItemsListProperty);
+            set => SetValue(ItemsListProperty, value);
+        }
+
         public event RoutedPropertyChangedEventHandler<double> ItemsWidthChanged
         {
             add => AddHandler(ItemsWidthChangedEvent, value);
@@ -117,6 +149,12 @@ namespace ImagePanelLibrary
         {
             add => AddHandler(ItemsMarginChangedEvent, value);
             remove => RemoveHandler(ItemsMarginChangedEvent, value);
+        }
+
+        public event RoutedPropertyChangedEventHandler<ObservableCollection<UIElement>> ItemsListChanged
+        {
+            add => AddHandler(ItemsListChangedEvent, value);
+            remove => RemoveHandler(ItemsListChangedEvent, value);
         }
 
         private static object ItemsWidthCoerceValue(DependencyObject d, object baseValue)
@@ -240,8 +278,54 @@ namespace ImagePanelLibrary
             }
         }
 
+        private static void ItemsListPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ImagePanel)
+            {
+                ImagePanel panel = d as ImagePanel;
+
+                if (e.OldValue != null && e.OldValue is ObservableCollection<UIElement> && e.NewValue is ObservableCollection<UIElement>)
+                {
+                    var oldValue = e.OldValue as ObservableCollection<UIElement>;
+                    var newValue = e.NewValue as ObservableCollection<UIElement>;
+
+                    if (newValue.Count > oldValue.Count)
+                    {
+                        var newElements = newValue.Except(oldValue);
+
+                        foreach (var item in newElements)
+                        {
+                            panel.InternalChildren.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        var newElements = oldValue.Except(newValue);
+
+                        foreach (var item in newElements)
+                        {
+                            panel.InternalChildren.Remove(item);
+                        }
+                    }
+                }
+                else
+                {
+                    var newValue = e.NewValue as ObservableCollection<UIElement>;
+
+                    foreach (var item in newValue)
+                    {
+                        panel.InternalChildren.Add(item);
+                    }
+                }
+
+                panel.RaiseEvent(new RoutedPropertyChangedEventArgs<ObservableCollection<UIElement>>((ObservableCollection<UIElement>)e.OldValue
+                        , (ObservableCollection<UIElement>)e.NewValue, ItemsListChangedEvent));
+            }
+        }
+
         protected override Size MeasureOverride(Size availableSize)
         {
+
             bool needToRecalculateRatio = true;
 
             if (childrenRatioDict.Count != 0)
@@ -432,6 +516,15 @@ namespace ImagePanelLibrary
             for (int i = -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK; i <= -2; i++)
             {
                 SwitchItems(availableSize, i, 1,WidthProperty, ItemsWidth);
+            }
+
+            int countOneType = childrenRatioDict.Where(item => item.Value == -1).Count();
+
+            for (int i = 0; i < countOneType; i++)
+            {
+                var foundedChild = childrenRatioDict.First(children => children.Value == -1);
+
+                childrenRatioDict[foundedChild.Key] = 1;
             }
         }
 

@@ -71,7 +71,13 @@ namespace WpfCustomGridLibrary.Helpers
                 {
                     childRatio = ImagePanel.PARTS_IN_VERTICAL_BLOCK;
                 }
+                if (double.IsNaN(childRatio))
+                {
+                    childRatio = 1;
+                }
                 setHeight = _itemsHeight / (int)childRatio;
+
+
             }
             else
             {
@@ -79,6 +85,10 @@ namespace WpfCustomGridLibrary.Helpers
                 if (childRatio < -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK)
                 {
                     childRatio = -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK;
+                }
+                if (double.IsNaN(childRatio))
+                {
+                    childRatio = 1;
                 }
                 setWidth = _itemsWidth / Math.Abs((int)childRatio);
             }
