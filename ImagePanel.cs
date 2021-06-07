@@ -46,11 +46,20 @@ namespace ImagePanelLibrary
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ImagePanel), new FrameworkPropertyMetadata(typeof(ImagePanel)));
 
-            ItemsWidthProperty = DependencyProperty.Register(nameof(ItemsWidth), typeof(double), typeof(ImagePanel), new PropertyMetadata(360.0));
-            ItemsHeightProperty = DependencyProperty.Register(nameof(ItemsHeight), typeof(double), typeof(ImagePanel), new PropertyMetadata(270.0));
-            ItemsMarginProperty = DependencyProperty.Register(nameof(ItemsMargin), typeof(Thickness), typeof(ImagePanel), new PropertyMetadata(new Thickness(0)));
-        }
+            ItemsWidthProperty = DependencyProperty.Register(nameof(ItemsWidth), typeof(double), typeof(ImagePanel)
+                    , new PropertyMetadata(360.0, ItemsWidthPropertyChanged, ItemsWidthCoerceValue));
+            ItemsHeightProperty = DependencyProperty.Register(nameof(ItemsHeight), typeof(double), typeof(ImagePanel)
+                    , new PropertyMetadata(270.0, ItemsHeightPropertyChanged, ItemsHeightCoerceValue));
+            ItemsMarginProperty = DependencyProperty.Register(nameof(ItemsMargin), typeof(Thickness), typeof(ImagePanel)
+                    , new PropertyMetadata(new Thickness(10), ItemsMarginPropertyChanged, ItemsMarginCoerceValue));
 
+            ItemsWidthChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsWidthChanged), RoutingStrategy.Bubble
+                , typeof(RoutedPropertyChangedEventHandler<double>), typeof(ImagePanel));
+            ItemsHeightChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsHeightChanged), RoutingStrategy.Bubble
+                    , typeof(RoutedPropertyChangedEventHandler<double>), typeof(ImagePanel));
+            ItemsMarginChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsMarginChanged), RoutingStrategy.Bubble
+        , typeof(RoutedPropertyChangedEventHandler<Thickness>), typeof(ImagePanel));
+        }
 
         public ImagePanel()
         {
@@ -71,6 +80,10 @@ namespace ImagePanelLibrary
         public static readonly DependencyProperty ItemsHeightProperty;
         public static readonly DependencyProperty ItemsMarginProperty;
 
+        public static readonly RoutedEvent ItemsWidthChangedEvent;
+        public static readonly RoutedEvent ItemsHeightChangedEvent;
+        public static readonly RoutedEvent ItemsMarginChangedEvent;
+
         public double ItemsWidth
         {
             get => (double)base.GetValue(ItemsWidthProperty);
@@ -86,6 +99,145 @@ namespace ImagePanelLibrary
         public Thickness ItemsMargin {
             get => (Thickness)GetValue(ItemsMarginProperty);
             set => SetValue(ItemsMarginProperty, value);
+        }
+
+        public event RoutedPropertyChangedEventHandler<double> ItemsWidthChanged
+        {
+            add => AddHandler(ItemsWidthChangedEvent, value);
+            remove => RemoveHandler(ItemsWidthChangedEvent, value);
+        }
+
+        public event RoutedPropertyChangedEventHandler<double> ItemsHeightChanged
+        {
+            add => AddHandler(ItemsHeightChangedEvent, value);
+            remove => RemoveHandler(ItemsHeightChangedEvent, value);
+        }
+
+        public event RoutedPropertyChangedEventHandler<Thickness> ItemsMarginChanged
+        {
+            add => AddHandler(ItemsMarginChangedEvent, value);
+            remove => RemoveHandler(ItemsMarginChangedEvent, value);
+        }
+
+        private static object ItemsWidthCoerceValue(DependencyObject d, object baseValue)
+        {
+            if (baseValue is double widthValue)
+            {
+                if (widthValue < 36.0)
+                {
+                    baseValue = 36.0;
+                }
+                else if (widthValue > 4800.0)
+                {
+                    baseValue = 4800.0;
+                }
+            }
+
+            return baseValue;
+        }
+
+        private static void ItemsWidthPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ImagePanel)
+            {
+                ImagePanel panel = d as ImagePanel;
+
+                if (panel.ItemsHeight != panel.ItemsWidth * 3.0 / 4.0)
+                {
+                    panel.ItemsHeight = panel.ItemsWidth * 3.0 / 4.0;
+                }
+
+                panel.RaiseEvent(new RoutedPropertyChangedEventArgs<double>((double)e.OldValue, (double)e.NewValue, ItemsWidthChangedEvent));
+            }
+        }
+
+        private static object ItemsHeightCoerceValue(DependencyObject d, object baseValue)
+        {
+            if (baseValue is double heightValue)
+            {
+                if (heightValue < 27.0)
+                {
+                    baseValue = 27.0;
+                }
+                else if (heightValue > 3600.0)
+                {
+                    baseValue = 3600.0;
+                }
+            }
+
+            return baseValue;
+        }
+
+        private static void ItemsHeightPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ImagePanel)
+            {
+                ImagePanel panel = d as ImagePanel;
+
+                if (panel.ItemsWidth != panel.ItemsHeight * 4.0 / 3.0)
+                {
+                    panel.ItemsWidth = panel.ItemsHeight * 4.0 / 3.0;
+                }
+
+                panel.RaiseEvent(new RoutedPropertyChangedEventArgs<double>((double)e.OldValue, (double)e.NewValue, ItemsHeightChangedEvent));
+            }
+        }
+
+        private static object ItemsMarginCoerceValue(DependencyObject d, object baseValue)
+        {
+            if (baseValue is Thickness marginValue)
+            {
+                Thickness minThickness = new(0);
+                Thickness maxThickness = new(100);
+
+                if (marginValue.Left < minThickness.Left)
+                {
+                    marginValue.Left = minThickness.Left;
+                }
+                if (marginValue.Right < minThickness.Right)
+                {
+                    marginValue.Right = minThickness.Right;
+                }
+                if (marginValue.Top < minThickness.Top)
+                {
+                    marginValue.Top = minThickness.Top;
+                }
+                if (marginValue.Bottom < minThickness.Bottom)
+                {
+                    marginValue.Bottom = minThickness.Bottom;
+                }
+
+
+                if (marginValue.Left > maxThickness.Left)
+                {
+                    marginValue.Left = maxThickness.Left;
+                }
+                if (marginValue.Right > maxThickness.Right)
+                {
+                    marginValue.Right = maxThickness.Right;
+                }
+                if (marginValue.Top > maxThickness.Top)
+                {
+                    marginValue.Top = maxThickness.Top;
+                }
+                if (marginValue.Bottom > maxThickness.Bottom)
+                {
+                    marginValue.Bottom = maxThickness.Bottom;
+                }
+
+                baseValue = marginValue;
+            }
+
+            return baseValue;
+        }
+
+        private static void ItemsMarginPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is ImagePanel)
+            {
+                ImagePanel panel = d as ImagePanel;
+                panel.RaiseEvent(new RoutedPropertyChangedEventArgs<Thickness>((Thickness)e.OldValue, (Thickness)e.NewValue, ItemsMarginChangedEvent));
+            }
         }
 
         protected override Size MeasureOverride(Size availableSize)
@@ -274,41 +426,33 @@ namespace ImagePanelLibrary
         {
             for (int i = ImagePanel.PARTS_IN_VERTICAL_BLOCK; i >= 2; i--)
             {
-                int countOneType = childrenRatioDict.Where(item => item.Value == i).Count();
-
-                if (countOneType % i != 0)
-                {
-                    int movedElements = 0;
-                    while ((countOneType - movedElements) % i != 0)
-                    {
-                        var foundedChild = childrenRatioDict.First(children => children.Value == i);
-                        childrenRatioDict[foundedChild.Key] = foundedChild.Value - 1;
-                        InternalChildren[foundedChild.Key].SetValue(HeightProperty, ItemsHeight / (i - 1));
-                        InternalChildren[foundedChild.Key].Measure(availableSize);
-                        movedElements++;
-                    }
-                }
+                SwitchItems(availableSize, i, -1,HeightProperty, ItemsHeight);
             }
 
             for (int i = -ImagePanel.PARTS_IN_HORIZONTAL_BLOCK; i <= -2; i++)
             {
-                int countOneType = childrenRatioDict.Where(item => item.Value == i).Count();
+                SwitchItems(availableSize, i, 1,WidthProperty, ItemsWidth);
+            }
+        }
 
-                if (countOneType % Math.Abs(i) != 0)
+        private void SwitchItems(Size availableSize, int i, int onePointToSide,DependencyProperty dependencyProp, double itemValue)
+        {
+            int countOneType = childrenRatioDict.Where(item => item.Value == i).Count();
+
+            if (countOneType % Math.Abs(i) != 0)
+            {
+                int movedElements = 0;
+                while ((countOneType - movedElements) % Math.Abs(i) != 0)
                 {
-                    int movedElements = 0;
-                    while ((countOneType - movedElements) % Math.Abs(i) != 0)
+                    var foundedChild = childrenRatioDict.First(children => children.Value == i);
+                    childrenRatioDict[foundedChild.Key] = foundedChild.Value + onePointToSide;
+                    if (childrenRatioDict[foundedChild.Key] == -1)
                     {
-                        var foundedChild = childrenRatioDict.First(children => children.Value == i);
-                        childrenRatioDict[foundedChild.Key] = foundedChild.Value + 1;
-                        if (childrenRatioDict[foundedChild.Key] == -1)
-                        {
-                            childrenRatioDict[foundedChild.Key] = 1;
-                        }
-                        InternalChildren[foundedChild.Key].SetValue(WidthProperty, ItemsWidth / Math.Abs((i + 1)));
-                        InternalChildren[foundedChild.Key].Measure(availableSize);
-                        movedElements++;
+                        childrenRatioDict[foundedChild.Key] = 1;
                     }
+                    InternalChildren[foundedChild.Key].SetValue( dependencyProp, itemValue / Math.Abs(i + onePointToSide));
+                    InternalChildren[foundedChild.Key].Measure(availableSize);
+                    movedElements++;
                 }
             }
         }
