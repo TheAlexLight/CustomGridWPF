@@ -3,14 +3,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ImagePanelLibrary">
 
-    <ControlTemplate x:Key="imagePanelTemplate" TargetType="{x:Type local:ImagePanel}">
-        <Button Width="120" Height="60"></Button>
-        <!--<ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <local:ImagePanel/>
-        </ScrollViewer>-->
-    </ControlTemplate>
+    <!--<ScrollViewer>
+        <local:ImagePanel/>
+    </ScrollViewer>-->
 
     <!--<Style TargetType="{x:Type local:ImagePanel}">
         <Setter Property=""
+            <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <local:ImagePanel/>
+        </ScrollViewer>
     </Style>-->
 </ResourceDictionary>

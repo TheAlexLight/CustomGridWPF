@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using ImagePanelLibrary.Enums;
 using ImagePanelLibrary.Helpers;
 using WpfCustomGridLibrary.Helpers;
 
@@ -54,17 +56,19 @@ namespace ImagePanelLibrary
                     , new PropertyMetadata(270.0, ItemsHeightPropertyChanged, ItemsHeightCoerceValue));
             ItemsMarginProperty = DependencyProperty.Register(nameof(ItemsMargin), typeof(Thickness), typeof(ImagePanel)
                     , new PropertyMetadata(new Thickness(10), ItemsMarginPropertyChanged, ItemsMarginCoerceValue));
-            ItemsListProperty = DependencyProperty.Register(nameof(ItemsList), typeof(ObservableCollection<UIElement>), typeof(ImagePanel)
-        , new PropertyMetadata(null, ItemsListPropertyChanged));
+            ItemsListProperty = DependencyProperty.Register(nameof(ItemsList), typeof(IEnumerable<UIElement>), typeof(ImagePanel)
+                    , new PropertyMetadata(null, ItemsListPropertyChanged));
+            ItemsSortingProperty = DependencyProperty.Register(nameof(ItemsSorting), typeof(SortingType), typeof(ImagePanel)
+                    , new PropertyMetadata(SortingType.OneHorizontal));
 
             ItemsWidthChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsWidthChanged), RoutingStrategy.Bubble
                 , typeof(RoutedPropertyChangedEventHandler<double>), typeof(ImagePanel));
             ItemsHeightChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsHeightChanged), RoutingStrategy.Bubble
-                    , typeof(RoutedPropertyChangedEventHandler<double>), typeof(ImagePanel));
+                , typeof(RoutedPropertyChangedEventHandler<double>), typeof(ImagePanel));
             ItemsMarginChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsMarginChanged), RoutingStrategy.Bubble
-        , typeof(RoutedPropertyChangedEventHandler<Thickness>), typeof(ImagePanel));
+                , typeof(RoutedPropertyChangedEventHandler<Thickness>), typeof(ImagePanel));
             ItemsListChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsListChanged), RoutingStrategy.Bubble
-, typeof(RoutedPropertyChangedEventHandler<ObservableCollection<UIElement>>), typeof(ImagePanel));
+                , typeof(RoutedPropertyChangedEventHandler<IEnumerable<UIElement>>), typeof(ImagePanel));
         }
 
         public ImagePanel()
@@ -87,7 +91,8 @@ namespace ImagePanelLibrary
         //    parent.Children.Add(viewer);
         //}
 
-      
+
+
 
         BorderChecker checker = new();
         RatioManager manager = new();
@@ -98,12 +103,13 @@ namespace ImagePanelLibrary
         double tempLastHeight;
 
         public const int PARTS_IN_HORIZONTAL_BLOCK = 3;
-        public const int PARTS_IN_VERTICAL_BLOCK = 4;
+        public const int PARTS_IN_VERTICAL_BLOCK = 3;
 
         public static readonly DependencyProperty ItemsWidthProperty;
         public static readonly DependencyProperty ItemsHeightProperty;
         public static readonly DependencyProperty ItemsMarginProperty;
         public static readonly DependencyProperty ItemsListProperty;
+        public static readonly DependencyProperty ItemsSortingProperty;
 
         public static readonly RoutedEvent ItemsWidthChangedEvent;
         public static readonly RoutedEvent ItemsHeightChangedEvent;
@@ -127,10 +133,16 @@ namespace ImagePanelLibrary
             set => SetValue(ItemsMarginProperty, value);
         }
 
-        public ObservableCollection<UIElement> ItemsList
+        public IEnumerable<UIElement> ItemsList
         {
-            get => (ObservableCollection<UIElement>)GetValue(ItemsListProperty);
+            get => (IEnumerable<UIElement>)GetValue(ItemsListProperty);
             set => SetValue(ItemsListProperty, value);
+        }
+
+        public SortingType ItemsSorting
+        {
+            get => (SortingType)GetValue(ItemsSortingProperty);
+            set => SetValue(ItemsSortingProperty, value);
         }
 
         public event RoutedPropertyChangedEventHandler<double> ItemsWidthChanged
@@ -151,7 +163,7 @@ namespace ImagePanelLibrary
             remove => RemoveHandler(ItemsMarginChangedEvent, value);
         }
 
-        public event RoutedPropertyChangedEventHandler<ObservableCollection<UIElement>> ItemsListChanged
+        public event RoutedPropertyChangedEventHandler<IEnumerable<UIElement>> ItemsListChanged
         {
             add => AddHandler(ItemsListChangedEvent, value);
             remove => RemoveHandler(ItemsListChangedEvent, value);
@@ -284,12 +296,12 @@ namespace ImagePanelLibrary
             {
                 ImagePanel panel = d as ImagePanel;
 
-                if (e.OldValue != null && e.OldValue is ObservableCollection<UIElement> && e.NewValue is ObservableCollection<UIElement>)
+                if (e.OldValue != null && e.OldValue is IEnumerable<UIElement> && e.NewValue is IEnumerable<UIElement>)
                 {
-                    var oldValue = e.OldValue as ObservableCollection<UIElement>;
-                    var newValue = e.NewValue as ObservableCollection<UIElement>;
+                    var oldValue = e.OldValue as IEnumerable<UIElement>;
+                    var newValue = e.NewValue as IEnumerable<UIElement>;
 
-                    if (newValue.Count > oldValue.Count)
+                    if (newValue.Count() > oldValue.Count())
                     {
                         var newElements = newValue.Except(oldValue);
 
@@ -310,7 +322,7 @@ namespace ImagePanelLibrary
                 }
                 else
                 {
-                    var newValue = e.NewValue as ObservableCollection<UIElement>;
+                    var newValue = e.NewValue as IEnumerable<UIElement>;
 
                     foreach (var item in newValue)
                     {
@@ -318,14 +330,13 @@ namespace ImagePanelLibrary
                     }
                 }
 
-                panel.RaiseEvent(new RoutedPropertyChangedEventArgs<ObservableCollection<UIElement>>((ObservableCollection<UIElement>)e.OldValue
-                        , (ObservableCollection<UIElement>)e.NewValue, ItemsListChangedEvent));
+                panel.RaiseEvent(new RoutedPropertyChangedEventArgs<IEnumerable<UIElement>>((IEnumerable<UIElement>)e.OldValue
+                        , (IEnumerable<UIElement>)e.NewValue, ItemsListChangedEvent));
             }
         }
 
         protected override Size MeasureOverride(Size availableSize)
         {
-
             bool needToRecalculateRatio = true;
 
             if (childrenRatioDict.Count != 0)
@@ -376,9 +387,26 @@ namespace ImagePanelLibrary
 
             double additionalMargin = (finalSize.Width - (ItemsWidth + ItemsMargin.Left + ItemsMargin.Right) * countChildsInRow) / 2 / countChildsInRow;
 
-            SetOneItem(finalSize, additionalMargin);
-            SetVerticalItems(finalSize, additionalMargin);
-            SetHorizontalItems(finalSize, additionalMargin);
+            switch (ItemsSorting)
+            {
+                case SortingType.OneHorizontal:
+                    SetOneItem(finalSize, additionalMargin);
+                    SetHorizontalItems(finalSize, additionalMargin);
+                    SetVerticalItems(finalSize, additionalMargin);
+                    break;
+                case SortingType.ManyHorizontals:
+                    SetHorizontalItems(finalSize, additionalMargin);
+                    SetVerticalItems(finalSize, additionalMargin);
+                    SetOneItem(finalSize, additionalMargin);
+                    break;
+                case SortingType.ManyVerticals:
+                    SetVerticalItems(finalSize, additionalMargin);
+                    SetHorizontalItems(finalSize, additionalMargin);
+                    SetOneItem(finalSize, additionalMargin);
+                    break;
+                default:
+                    break;
+            }
 
             lastChildWidth = 0;
             lastChildHeight = 0;
@@ -408,6 +436,8 @@ namespace ImagePanelLibrary
 
         private void SetVerticalItems(Size finalSize, double additionalMargin)
         {
+            tempLastHeight = lastChildHeight;
+
             for (int i = 2; i <= ImagePanel.PARTS_IN_VERTICAL_BLOCK; i++)
             {
                 int count = 0;
