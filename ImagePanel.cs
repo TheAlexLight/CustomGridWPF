@@ -56,8 +56,6 @@ namespace ImagePanelLibrary
                     , new PropertyMetadata(270.0, ItemsHeightPropertyChanged, ItemsHeightCoerceValue));
             ItemsMarginProperty = DependencyProperty.Register(nameof(ItemsMargin), typeof(Thickness), typeof(ImagePanel)
                     , new PropertyMetadata(new Thickness(10), ItemsMarginPropertyChanged, ItemsMarginCoerceValue));
-            ItemsListProperty = DependencyProperty.Register(nameof(ItemsList), typeof(IEnumerable<UIElement>), typeof(ImagePanel)
-                    , new PropertyMetadata(null, ItemsListPropertyChanged));
             ItemsSortingProperty = DependencyProperty.Register(nameof(ItemsSorting), typeof(SortingType), typeof(ImagePanel)
                     , new PropertyMetadata(SortingType.OneHorizontal));
 
@@ -67,32 +65,11 @@ namespace ImagePanelLibrary
                 , typeof(RoutedPropertyChangedEventHandler<double>), typeof(ImagePanel));
             ItemsMarginChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsMarginChanged), RoutingStrategy.Bubble
                 , typeof(RoutedPropertyChangedEventHandler<Thickness>), typeof(ImagePanel));
-            ItemsListChangedEvent = EventManager.RegisterRoutedEvent(nameof(ItemsListChanged), RoutingStrategy.Bubble
-                , typeof(RoutedPropertyChangedEventHandler<IEnumerable<UIElement>>), typeof(ImagePanel));
         }
 
         public ImagePanel()
         {
-            //this.Loaded += new RoutedEventHandler(ImagePanel_Loaded);
         }
-
-        //private void ImagePanel_Loaded(object sender, RoutedEventArgs e)
-        //{
-        //    var parent = VisualTreeHelper.GetParent(this);
-
-        //    ScrollViewer viewer = new ScrollViewer
-        //    {
-        //        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-        //        VerticalScrollBarVisibility = ScrollBarVisibility.Auto
-        //    };
-
-        //    viewer.Content = this;
-
-        //    parent.Children.Add(viewer);
-        //}
-
-
-
 
         BorderChecker checker = new();
         RatioManager manager = new();
@@ -108,13 +85,11 @@ namespace ImagePanelLibrary
         public static readonly DependencyProperty ItemsWidthProperty;
         public static readonly DependencyProperty ItemsHeightProperty;
         public static readonly DependencyProperty ItemsMarginProperty;
-        public static readonly DependencyProperty ItemsListProperty;
         public static readonly DependencyProperty ItemsSortingProperty;
 
         public static readonly RoutedEvent ItemsWidthChangedEvent;
         public static readonly RoutedEvent ItemsHeightChangedEvent;
         public static readonly RoutedEvent ItemsMarginChangedEvent;
-        public static readonly RoutedEvent ItemsListChangedEvent;
 
         public double ItemsWidth
         {
@@ -131,12 +106,6 @@ namespace ImagePanelLibrary
         public Thickness ItemsMargin {
             get => (Thickness)GetValue(ItemsMarginProperty);
             set => SetValue(ItemsMarginProperty, value);
-        }
-
-        public IEnumerable<UIElement> ItemsList
-        {
-            get => (IEnumerable<UIElement>)GetValue(ItemsListProperty);
-            set => SetValue(ItemsListProperty, value);
         }
 
         public SortingType ItemsSorting
@@ -161,12 +130,6 @@ namespace ImagePanelLibrary
         {
             add => AddHandler(ItemsMarginChangedEvent, value);
             remove => RemoveHandler(ItemsMarginChangedEvent, value);
-        }
-
-        public event RoutedPropertyChangedEventHandler<IEnumerable<UIElement>> ItemsListChanged
-        {
-            add => AddHandler(ItemsListChangedEvent, value);
-            remove => RemoveHandler(ItemsListChangedEvent, value);
         }
 
         private static object ItemsWidthCoerceValue(DependencyObject d, object baseValue)
@@ -290,60 +253,8 @@ namespace ImagePanelLibrary
             }
         }
 
-        private static void ItemsListPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is ImagePanel)
-            {
-                ImagePanel panel = d as ImagePanel;
-
-                if (e.OldValue != null && e.OldValue is IEnumerable<UIElement> && e.NewValue is IEnumerable<UIElement>)
-                {
-                    var oldValue = e.OldValue as IEnumerable<UIElement>;
-                    var newValue = e.NewValue as IEnumerable<UIElement>;
-
-                    if (newValue.Count() > oldValue.Count())
-                    {
-                        var newElements = newValue.Except(oldValue);
-
-                        foreach (var item in newElements)
-                        {
-                            panel.InternalChildren.Add(item);
-                        }
-                    }
-                    else
-                    {
-                        var newElements = oldValue.Except(newValue);
-
-                        foreach (var item in newElements)
-                        {
-                            panel.InternalChildren.Remove(item);
-                        }
-                    }
-                }
-                else
-                {
-                    var newValue = e.NewValue as IEnumerable<UIElement>;
-
-                    foreach (var item in newValue)
-                    {
-                        panel.InternalChildren.Add(item);
-                    }
-                }
-
-                panel.RaiseEvent(new RoutedPropertyChangedEventArgs<IEnumerable<UIElement>>((IEnumerable<UIElement>)e.OldValue
-                        , (IEnumerable<UIElement>)e.NewValue, ItemsListChangedEvent));
-            }
-        }
-
         protected override Size MeasureOverride(Size availableSize)
         {
-            bool needToRecalculateRatio = true;
-
-            if (childrenRatioDict.Count != 0)
-            {
-                needToRecalculateRatio = false;
-            }
-
             Window parentWindow = Application.Current.MainWindow;
 
             checker.SetMinimunWidth(parentWindow, ItemsWidth, ItemsMargin, MinWidthProperty);
@@ -353,22 +264,25 @@ namespace ImagePanelLibrary
 
             foreach (UIElement child in InternalChildren)
             {
-                if (needToRecalculateRatio)
-                {
-                  childrenRatioDict = manager.DefineElementsRatio(child, WidthProperty, HeightProperty, childrenRatioDict, InternalChildren);
-                }
+                childrenRatioDict = manager.DefineElementsRatio(child, WidthProperty, HeightProperty, childrenRatioDict, InternalChildren);
 
                 availableSize = new Size(parentWindow.Width,parentWindow.Height);
 
                 child.Measure(availableSize);
             }
 
-            if (needToRecalculateRatio)
-            {
                 SearchAllPairs(availableSize);
-            }
 
-            return base.ArrangeOverride(availableSize);
+            int countChildsInRow = (int)(availableSize.Width / (ItemsWidth + ItemsMargin.Left + ItemsMargin.Right));
+            int elementsInPanel = CountPossibleAmountInRow();
+
+            int heightOfAllLines = elementsInPanel / countChildsInRow;
+
+            Size availSize = availableSize;
+            availSize.Width = ItemsWidth + ItemsMargin.Left + ItemsMargin.Right;
+            availSize.Height = heightOfAllLines * (ItemsHeight + ItemsMargin.Top + ItemsMargin.Bottom);
+
+            return base.ArrangeOverride(availSize);
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -404,8 +318,6 @@ namespace ImagePanelLibrary
                     SetHorizontalItems(finalSize, additionalMargin);
                     SetOneItem(finalSize, additionalMargin);
                     break;
-                default:
-                    break;
             }
 
             lastChildWidth = 0;
@@ -426,7 +338,7 @@ namespace ImagePanelLibrary
                     lastChildHeight += ItemsHeight + ItemsMargin.Top + ItemsMargin.Bottom;
                 }
 
-                child.Arrange(new Rect(new Point(lastChildWidth, lastChildHeight), child.DesiredSize));
+                child.Arrange(new Rect(new Point(lastChildWidth + additionalMargin, lastChildHeight), child.DesiredSize));
 
                 lastChildWidth += child.DesiredSize.Width + additionalMargin;
             }
@@ -513,6 +425,7 @@ namespace ImagePanelLibrary
                     {
                         tempLastHeight = lastChildHeight;
                         lastChildWidth += (child.DesiredSize.Width - ItemsMargin.Left - ItemsMargin.Right) * count + ItemsMargin.Left + ItemsMargin.Right + additionalMargin;
+                        tempLastWidth = lastChildWidth;
                         count = 0;
                     }
                 }
