@@ -1,0 +1,7 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    
+    <Image x:Key="imageQ" Source="../Images/q.jpg" Stretch="UniformToFill"/>
+    <Image x:Key="imageQwe" Source="../Images/qwe.jpg" Stretch="UniformToFill"/>
+</ResourceDictionary>

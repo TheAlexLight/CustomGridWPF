@@ -1,0 +1,159 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry1">F1 M737.41,954.65z M0,0z M6.0609,910.94C34.3449,902.86 96.9749,882.66 157.5809,884.68 218.1899,886.7003 248.4949,914.985 278.8009,910.944 309.1059,906.9034 309.1059,888.721 331.3289,886.7 353.5519,884.6797 381.8369,906.903 408.1009,906.903 434.3649,906.903 438.4059,882.659 499.0149,882.659 559.6239,882.659 557.6039,914.984 600.0349,925.085 642.4609,935.187 628.3189,894.78 680.8469,888.72 733.3749,882.6591 741.4559,902.862 741.4559,902.862L743.4762,1056.402 6.06620000000009,1056.402 6.06620030000009,910.942z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry2">F1 M737.41,954.65z M0,0z M482.86,673.79C501.431,685.219 522.86,710.933 531.431,732.361 540.0024,753.79 551.431,765.218 551.431,765.218 551.431,765.218 517.145,810.932 510.002,835.218 502.8591,859.504 501.4306,905.504 501.4306,905.504L517.1446,904.0754C517.1446,904.0754 514.2874,842.3614 531.4306,822.3614 548.5738,802.3614 578.5736,775.2184 578.5736,775.2184 578.5736,775.2184 564.2876,738.0754 564.2876,720.9324 564.2876,703.7894 581.4306,670.9324 581.4306,670.9324 581.4306,670.9324 557.1446,603.7894 482.8596,673.7895z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry3">F1 M737.41,954.65z M0,0z M330,336.66L295.719,358.066C295.719,358.066 280.656,591.506 308.563,675.226 312.1067,685.857 316.3057,694.467 321.094,701.382 326.5471,720.647 335.719,757.124 335.719,785.226 335.719,825.226 334.2815,912.386 334.2815,912.386L347.1565,912.386C347.1565,912.386 348.2598,769.016 353.5315,724.166 358.6399,725.3564 363.9975,725.8728 369.5935,725.8535 374.1297,744.9205 378.5623,768.5215 378.5623,788.0725 378.5623,828.0725 377.1561,915.2325 377.1561,915.2325L390.0001,915.2325C390.0001,915.2325 391.2274,760.7625 397.0313,722.3525 446.2293,711.4715 506.6113,679.4365 562.4113,690.3215 583.4813,730.5425 592.4763,747.1625 605.7233,765.2275 621.4373,786.6565 568.5803,816.6515 565.7233,849.5085 562.8661,882.3655 561.4421,910.2185 561.4421,910.2185L575.7231,911.656C575.7231,911.656 569.9999,860.937 594.2851,829.509 618.5711,798.08 642.8471,778.071 642.8471,778.071 642.8471,778.071 617.1551,703.799 621.4411,685.227 622.8536,679.1061 625.4862,670.815 628.4099,662.446 644.1799,637.126 650.6699,600.736 629.9999,566.636 628.8167,564.6834 627.495,562.879 626.0624,561.1985 633.8687,557.7434 642.5814,553.4669 648.5624,549.4795 661.4194,540.9081 665.7184,529.4795 665.7184,529.4795 665.7184,529.4795 634.2724,536.6268 652.8434,525.1983 671.4144,513.7693 679.9994,495.1983 679.9994,495.1983 679.9994,495.1983 659.9954,496.6403 644.2804,502.3545 628.5664,508.0688 621.4364,522.3545 621.4364,522.3545L628.5614,500.9165C628.5614,500.9165 609.9944,508.0638 604.2804,526.6355 602.2555,533.2164 602.2218,540.3115 602.9992,546.7605 534.3592,525.2905 384.8092,596.3505 354.2792,569.4805 318.5692,538.0505 329.9992,336.6405 329.9992,336.6405z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry4">F1 M737.41,954.65z M0,0z M196.73,528.34C196.73,528.34 181.624,528.4312 177.106,564.582 172.5886,600.733 201.292,603.338 209.967,588.101 218.6417,572.863 213.9108,554.184 224.971,545.116 236.031,536.0477 195.623,526.468 196.73,528.34z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry5">F1 M737.41,954.65z M0,0z M198.99,547.77C189.2034,554.8381 189.2034,559.731 189.2034,573.324 189.2034,586.916 193.0093,591.81 193.0093,591.81</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry6">F1 M737.41,954.65z M0,0z M250.34,279.51C228.945,279.5838 208.916,287.5583 197.367,305.795 186.658,322.704 183.176,336.476 183.214,348.207 179.3536,357.6797 171.096,375.087 157.405,390.357 137.413,412.655 103.582,432.657 100.507,460.338 97.4314,488.019 102.8143,504.938 102.8143,504.938 102.8143,504.938 140.4683,462.642 166.6103,422.659 179.3353,403.197 184.6063,383.201 186.4723,367.878 193.9267,391.616 209.1603,406.806 176.6245,429.581 122.8005,467.257 151.8875,568.471 228.9085,554.911 325.0225,537.995 268.4275,451.171 308.8805,410.361 332.3965,386.636 330.9925,364.875 328.7925,345.407 338.0162,359.915 346.8835,381.304 351.1735,413.43 355.7819,447.939 394.1805,502.583 394.1805,502.583 394.1805,502.583 396.4878,485.325 396.4878,442.188 396.4878,404.507 339.1618,343.48 326.4138,328.448 314.4398,283.126 289.5938,283.557 250.3418,279.511z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry7">F1 M737.41,954.65z M0,0z M172,541.07C172,541.07 183.413,533.8253 163.542,503.393 147.086,478.19 251.729,480.053 231.975,508.0065 215.661,531.0915 215.354,540.3165 234.2817,553.3725 238.3345,556.1679 215.0587,558.7549 199.6807,554.9103 182.2187,550.5447 171.9997,541.0703 171.9997,541.0703z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry8">F1 M737.41,954.65z M0,0z M316.87,216.66C319.5161,209.9614 324.2887,208.9644 327.53,214.433 330.7712,219.9016 331.2537,229.765 328.6076,236.464 325.9615,243.1626 321.1889,244.1596 317.9476,238.691 315.432,234.4466 314.505,227.361 315.6431,221.075</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry9">F1 M737.41,954.65z M0,0z M316.87,216.66C319.5161,209.9614 324.2887,208.9644 327.53,214.433 330.7712,219.9016 331.2537,229.765 328.6076,236.464 325.9615,243.1626 321.1889,244.1596 317.9476,238.691 315.432,234.4466 314.505,227.361 315.6431,221.075</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry10">F1 M737.41,954.65z M0,0z M301.95,308.31C301.95,308.31 296.5676,317.5369 301.18109,324.457 305.79449,331.3772 318.86609,323.68809 318.86609,323.68809 318.86609,323.68809 348.85309,286.01209 358.08009,280.62909 367.30699,275.24669 380.37809,269.09509 393.45009,279.86018 406.52109,290.62518 433.43309,267.55718 433.43309,267.55718L424.97509,258.33028C424.97509,258.33028 428.05069,274.47728 407.29009,268.32608 386.52909,262.17478 388.83609,242.18308 421.13009,232.18708 453.42409,222.19128 448.04209,238.33838 472.64709,236.80048 497.25209,235.26268 501.86609,215.27148 501.86609,215.27148L491.87029,210.65808C491.87029,210.65808 496.48369,222.96108 481.10529,222.96108 465.72689,222.96108 448.04229,212.19608 431.89529,212.96528 415.74829,213.73418 392.68129,216.80978 379.60929,230.65028 366.53829,244.49028 352.69729,208.35228 383.45379,188.36028 414.21029,168.36828 400.36979,126.84728 400.36979,126.84728L382.68479,128.38508C382.68479,128.38508 400.36979,142.99408 385.76039,163.75508 371.15099,184.51608 355.00439,152.22108 355.00439,152.22108L345.00859,162.21688C345.00859,162.21688 374.22759,170.67488 361.15559,189.89788 348.08459,209.12088 351.92869,226.03688 352.69759,243.72188 353.46649,261.40688 303.48759,308.30988 301.94959,308.30988z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry11">F1 M737.41,954.65z M0,0z M192.32,322.26L146.186,271.512C146.186,271.512 133.883,264.5918 114.661,267.6675 95.438,270.7431 74.678,253.0585 74.678,253.0585 74.678,253.0585 73.1402,248.4451 79.2914,244.6005 85.4427,240.756 85.4427,241.5249 85.4427,241.5249 85.4427,241.5249 86.9805,251.5207 103.8967,254.5959 120.8127,257.6715 123.1197,250.7514 123.1197,250.7514 123.1197,250.7514 116.1995,233.8354 99.2837,222.3014 82.3679,210.7674 78.5227,188.4694 78.5227,173.0914 78.5227,157.7134 87.7496,140.7974 87.7496,140.7974 87.7496,140.7974 90.8252,134.6461 96.9765,140.02849 103.1278,145.41088 101.59,146.17979 101.59,146.17979 101.59,146.17979 92.3631,150.02429 92.3631,170.01579 92.3631,190.00729 96.9765,205.38579 103.1281,210.76779 109.2794,216.15019 125.4261,219.22579 125.4261,219.22579 125.4261,219.22579 121.5815,180.01179 129.2706,163.86479 136.9597,147.71779 138.4975,131.57079 132.3462,123.88179 126.1949,116.19269 112.3542,114.65489 112.3542,114.65489 112.3542,114.65489 110.0475,113.88599 113.12311,106.19689 116.19872,98.50779 120.81221,103.12129 120.81221,103.12129 120.81221,103.12129 129.27021,103.89021 137.72821,112.34819 146.18621,120.80617 150.79921,132.34019 149.26221,144.64219 147.72441,156.94519 141.57311,170.01619 141.57311,184.62519 141.57311,199.23419 164.64011,186.16299 180.78711,165.40219 196.93411,144.64139 190.78291,130.03219 190.78291,130.03219 190.78291,130.03219 200.77871,122.34309 205.39191,130.80111 210.00531,139.25911 202.31631,170.01511 184.63091,185.39311 166.94551,200.77111 156.18091,199.23311 145.41691,209.22911 134.65191,219.22491 140.03451,241.52311 147.72361,252.28811 155.41271,263.05311 173.86661,274.58611 173.86661,274.58611 173.86661,274.58611 175.40441,240.75411 180.78681,231.52711 186.16921,222.30021 193.85781,219.22411 193.85781,219.22411 193.85781,219.22411 208.46681,219.99302 207.69781,226.14431 206.9289,232.29561 206.9289,233.06451 206.9289,233.06451 206.9289,233.06451 197.702,230.75781 193.0889,246.13551 188.4755,261.51351 186.9376,273.04751 186.9376,273.04751L187.7065,284.58151 209.2355,309.18651C209.2355,309.18651,213.0801,326.87151,192.3195,322.25751z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry12">F1 M737.41,954.65z M0,0z M377.14,908.79L391.426,908.79C391.426,908.79 394.2831,928.076 389.9974,933.79 385.7117,939.5043 383.5688,922.361 383.5688,922.361 383.5688,922.361 385.7117,935.932 378.5688,934.504 371.4259,933.0754 377.85451,910.933 377.1402,908.79z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry13">F1 M737.41,954.65z M0,0z M334.29,908.79L348.576,908.79C348.576,908.79 351.4331,928.076 347.1474,933.79 342.8617,939.5043 340.7188,922.361 340.7188,922.361 340.7188,922.361 342.8617,935.932 335.7188,934.504 328.5759,933.0754 335.00451,910.933 334.2902,908.79z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry14">F1 M737.41,954.65z M0,0z M561.43,909.08L575.716,909.08C575.716,909.08 578.5731,928.366 574.2874,934.08 570.0017,939.7943 567.8588,922.651 567.8588,922.651 567.8588,922.651 570.0017,936.222 562.8588,934.794 555.7159,933.3654 562.14451,911.223 561.4302,909.08z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry15">F1 M737.41,954.65z M0,0z M502.86,903.36L517.146,903.36C517.146,903.36 520.0031,922.646 515.7174,928.36 511.4317,934.0743 509.2888,916.931 509.2888,916.931 509.2888,916.931 511.4317,930.502 504.2888,929.074 497.1459,927.6454 503.57451,905.503 502.8602,903.36z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry16">F1 M737.41,954.65z M0,0z M158.1,922.94C165.1562,916.0254 177.883,914.9961 186.527,920.6411 195.1703,926.2861 196.4568,936.4681 189.4006,943.3821 182.3444,950.2967 169.6176,951.326 160.9736,945.681 154.2653,941.2997 151.7934,933.985 154.8283,927.497</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry17">F1 M737.41,954.65z M0,0z M158.1,922.94C165.1562,916.0254 177.883,914.9961 186.527,920.6411 195.1703,926.2861 196.4568,936.4681 189.4006,943.3821 182.3444,950.2967 169.6176,951.326 160.9736,945.681 154.2653,941.2997 151.7934,933.985 154.8283,927.497</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry18">F1 M737.41,954.65z M0,0z M158.1,922.94C165.1562,916.0254 177.883,914.9961 186.527,920.6411 195.1703,926.2861 196.4568,936.4681 189.4006,943.3821 182.3444,950.2967 169.6176,951.326 160.9736,945.681 154.2653,941.2997 151.7934,933.985 154.8283,927.497</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry19">F1 M737.41,954.65z M0,0z M158.1,922.94C165.1562,916.0254 177.883,914.9961 186.527,920.6411 195.1703,926.2861 196.4568,936.4681 189.4006,943.3821 182.3444,950.2967 169.6176,951.326 160.9736,945.681 154.2653,941.2997 151.7934,933.985 154.8283,927.497</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry20">F1 M737.41,954.65z M0,0z M158.1,922.94C165.1562,916.0254 177.883,914.9961 186.527,920.6411 195.1703,926.2861 196.4568,936.4681 189.4006,943.3821 182.3444,950.2967 169.6176,951.326 160.9736,945.681 154.2653,941.2997 151.7934,933.985 154.8283,927.497</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry21">F1 M737.41,954.65z M0,0z M158.1,922.94C165.1562,916.0254 177.883,914.9961 186.527,920.6411 195.1703,926.2861 196.4568,936.4681 189.4006,943.3821 182.3444,950.2967 169.6176,951.326 160.9736,945.681 154.2653,941.2997 151.7934,933.985 154.8283,927.497</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry22">F1 M737.41,954.65z M0,0z M158.1,922.94C165.1562,916.0254 177.883,914.9961 186.527,920.6411 195.1703,926.2861 196.4568,936.4681 189.4006,943.3821 182.3444,950.2967 169.6176,951.326 160.9736,945.681 154.2653,941.2997 151.7934,933.985 154.8283,927.497</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry23">F1 M737.41,954.65z M0,0z M158.1,922.94C165.1562,916.0254 177.883,914.9961 186.527,920.6411 195.1703,926.2861 196.4568,936.4681 189.4006,943.3821 182.3444,950.2967 169.6176,951.326 160.9736,945.681 154.2653,941.2997 151.7934,933.985 154.8283,927.497</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry24">F1 M737.41,954.65z M0,0z M207.08,296.77C207.08,296.77 222.232,314.953 250.517,317.983 278.801,321.0135 312.136,295.76 312.136,295.76 312.136,295.76 318.1969,275.557 311.1258,267.476 304.0547,259.3948 296.9838,288.689 254.5568,288.689 212.1308,288.689 220.2118,263.435 210.1098,265.455 200.0078,267.4753 200.0078,282.628 207.0793,296.77z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry25">F1 M737.41,954.65z M0,0z M210.11,269.49C213.1405,265.4494 224.252,249.287 225.262,230.094 226.2722,210.901 224.18,189.984 226.20036,173.821 228.22066,157.659 231.32296,140.19 255.56636,128.068 279.81036,115.946 296.98236,118.9766 315.16536,124.0274 333.34836,129.0782 342.43936,156.3524 342.43936,176.5554 342.43936,196.7584 355.57136,214.9414 347.49016,226.0524 339.40896,237.1644 332.33816,175.5444 313.14516,167.4634 293.95216,159.3822 283.85116,186.6564 283.85116,211.9104 283.85116,237.1644 307.08516,268.4794 307.08516,268.4794 307.08516,268.4794 301.02426,286.6624 269.70916,294.7434 238.39416,302.8246 221.22216,289.6926 210.11016,269.4894z</Geometry>
+  <Geometry x:Key="kablam_a_cartoon_reindeerGeometry26">F1 M737.41,954.65z M0,0z M333.18,214.19C339.1778,206.8432 349.996,205.7496 357.343,211.7474 364.6898,217.7452 365.7834,228.5634 359.7856,235.9104 353.7878,243.2572 342.9696,244.3508 335.6226,238.353 329.9205,233.6979 327.8194,225.926 330.3991,219.032</Geometry>
+  <DrawingGroup x:Key="kablam_a_cartoon_reindeerDrawingGroup" ClipGeometry="M0,0 V954.65 H737.41 V0 H0 Z">
+    <DrawingGroup Opacity="1" Transform="1,0,0,1,-6.0609,-101.75">
+      <DrawingGroup Opacity="1">
+        <DrawingGroup Opacity="1">
+          <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry1}">
+            <GeometryDrawing.Brush>
+              <LinearGradientBrush StartPoint="389.92,910.94" EndPoint="389.92,1057.7" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                <GradientStop Color="#FFAAFFEE" Offset="0" />
+                <GradientStop Color="#00AAFFEE" Offset="1" />
+              </LinearGradientBrush>
+            </GeometryDrawing.Brush>
+          </GeometryDrawing>
+          <GeometryDrawing Brush="#FFA05A2C" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry2}" />
+          <GeometryDrawing Brush="#FFD38D5F" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry3}" />
+          <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry4}">
+            <GeometryDrawing.Brush>
+              <LinearGradientBrush StartPoint="313.3,440.21" EndPoint="313.3,507.49" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1" Transform="0.73727,0.18927,-0.18927,0.73727,55.587,162.83">
+                <GradientStop Color="#FF782121" Offset="0" />
+                <GradientStop Color="#FFFF2A2A" Offset="1" />
+              </LinearGradientBrush>
+            </GeometryDrawing.Brush>
+          </GeometryDrawing>
+          <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry5}">
+            <GeometryDrawing.Pen>
+              <Pen Brush="#FF782121" Thickness="0.76118" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+            </GeometryDrawing.Pen>
+          </GeometryDrawing>
+          <GeometryDrawing Brush="#FFD38D5F" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry6}">
+            <GeometryDrawing.Pen>
+              <Pen Brush="#FFA05A2C" Thickness="0.76118" StartLineCap="Flat" EndLineCap="Flat" LineJoin="Miter" />
+            </GeometryDrawing.Pen>
+          </GeometryDrawing>
+          <GeometryDrawing Brush="#FF502D16" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry7}" />
+          <DrawingGroup Transform="0.76118,0,0,0.76118,-30.991,212.14">
+            <GeometryDrawing Brush="#FF501616" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry8}" />
+          </DrawingGroup>
+          <DrawingGroup Transform="0.76118,0,0,0.76118,3.61,212.91">
+            <GeometryDrawing Brush="#FF501616" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry9}" />
+          </DrawingGroup>
+          <GeometryDrawing Brush="#FF782121" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry10}" />
+          <GeometryDrawing Brush="#FF782121" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry11}" />
+          <GeometryDrawing Brush="#FF28170B" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry12}" />
+          <GeometryDrawing Brush="#FF28170B" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry13}" />
+          <GeometryDrawing Brush="#FF28170B" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry14}" />
+          <GeometryDrawing Brush="#FF28170B" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry15}" />
+          <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry16}">
+            <GeometryDrawing.Brush>
+              <LinearGradientBrush StartPoint="153.54,917" EndPoint="178.8,944.78" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                <GradientStop Color="#FF5FD3BC" Offset="0" />
+                <GradientStop Color="#005FD3BC" Offset="1" />
+              </LinearGradientBrush>
+            </GeometryDrawing.Brush>
+          </GeometryDrawing>
+          <DrawingGroup Transform="1.425,0,0,1.425,11.519,-337.18">
+            <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry17}">
+              <GeometryDrawing.Brush>
+                <LinearGradientBrush StartPoint="153.54,917" EndPoint="178.8,944.78" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                  <GradientStop Color="#FF5FD3BC" Offset="0" />
+                  <GradientStop Color="#005FD3BC" Offset="1" />
+                </LinearGradientBrush>
+              </GeometryDrawing.Brush>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup Transform="1.425,0,0,1.425,-187.48,-369.51">
+            <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry18}">
+              <GeometryDrawing.Brush>
+                <LinearGradientBrush StartPoint="153.54,917" EndPoint="178.8,944.78" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                  <GradientStop Color="#FF5FD3BC" Offset="0" />
+                  <GradientStop Color="#005FD3BC" Offset="1" />
+                </LinearGradientBrush>
+              </GeometryDrawing.Brush>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup Transform="0.65626,0,0,0.65626,326.53,318.24">
+            <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry19}">
+              <GeometryDrawing.Brush>
+                <LinearGradientBrush StartPoint="153.54,917" EndPoint="178.8,944.78" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                  <GradientStop Color="#FF5FD3BC" Offset="0" />
+                  <GradientStop Color="#005FD3BC" Offset="1" />
+                </LinearGradientBrush>
+              </GeometryDrawing.Brush>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup Transform="1,0,0,1,114.15,-1.0102">
+            <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry20}">
+              <GeometryDrawing.Brush>
+                <LinearGradientBrush StartPoint="153.54,917" EndPoint="178.8,944.78" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                  <GradientStop Color="#FF5FD3BC" Offset="0" />
+                  <GradientStop Color="#005FD3BC" Offset="1" />
+                </LinearGradientBrush>
+              </GeometryDrawing.Brush>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup Transform="0.65626,0,0,0.65626,416.43,370.77">
+            <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry21}">
+              <GeometryDrawing.Brush>
+                <LinearGradientBrush StartPoint="153.54,917" EndPoint="178.8,944.78" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                  <GradientStop Color="#FF5FD3BC" Offset="0" />
+                  <GradientStop Color="#005FD3BC" Offset="1" />
+                </LinearGradientBrush>
+              </GeometryDrawing.Brush>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup Transform="0.65626,0,0,0.65626,513.41,344.5">
+            <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry22}">
+              <GeometryDrawing.Brush>
+                <LinearGradientBrush StartPoint="153.54,917" EndPoint="178.8,944.78" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                  <GradientStop Color="#FF5FD3BC" Offset="0" />
+                  <GradientStop Color="#005FD3BC" Offset="1" />
+                </LinearGradientBrush>
+              </GeometryDrawing.Brush>
+            </GeometryDrawing>
+          </DrawingGroup>
+          <DrawingGroup Transform="0.65626,0,0,0.65626,601.29,318.24">
+            <GeometryDrawing Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry23}">
+              <GeometryDrawing.Brush>
+                <LinearGradientBrush StartPoint="153.54,917" EndPoint="178.8,944.78" MappingMode="Absolute" SpreadMethod="Pad" Opacity="1">
+                  <GradientStop Color="#FF5FD3BC" Offset="0" />
+                  <GradientStop Color="#005FD3BC" Offset="1" />
+                </LinearGradientBrush>
+              </GeometryDrawing.Brush>
+            </GeometryDrawing>
+          </DrawingGroup>
+        </DrawingGroup>
+        <GeometryDrawing Brush="#FFFFAAAA" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry24}" />
+        <GeometryDrawing Brush="#FFFF2A2A" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry25}" />
+        <GeometryDrawing Brush="#FFFFCC00" Geometry="{StaticResource kablam_a_cartoon_reindeerGeometry26}" />
+      </DrawingGroup>
+    </DrawingGroup>
+  </DrawingGroup>
+  <DrawingImage x:Key="kablam_a_cartoon_reindeerDrawingImage" Drawing="{StaticResource kablam_a_cartoon_reindeerDrawingGroup}" />
+</ResourceDictionary>
